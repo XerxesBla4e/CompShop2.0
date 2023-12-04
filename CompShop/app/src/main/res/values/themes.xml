@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CompShop" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.CompShop" parent="Base.Theme.CompShop" />
+    <style name="Theme.MomoTest" parent="Theme.MaterialComponents.Light.NoActionBar"/>
+    <!-- Customize your light theme here. -->
+    <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <item name="colorPrimary1" type="color">@color/colorPrimary</item>
+    <item name="colorPrimaryDark1" type="color">@color/grey</item>
+    <item name="colorAccent1" type="color">@color/orange</item>
+    <!--    <item name="OTPButtonStyle">@style/myOtpBtnStyle</item>
+        <item name="PayButtonStyle">@style/myBtnStyle</item>
+        <item name="PinButtonStyle">@style/myPinButtonStyle</item>
+        <item name="OTPHeaderStyle">@style/myOtpHeaderStyle</item>
+        <item name="TabLayoutStyle">@style/myTabLayoutStyle</item>
+        <item name="PinHeaderStyle">@style/myPinHeaderStyle</item>
+        <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
+        <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
+        <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>-->
+
+
+</resources>

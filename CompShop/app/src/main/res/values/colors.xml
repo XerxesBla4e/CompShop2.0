@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#FF5252</color>
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorTextSecondary">#757575</color>
+    <color name="colorBackground">#FFFFFFFF</color>
+    <color name="colorOnboardingIndicatorInactive">#72BCF7</color>
+    <color name="darker_grey">#A9A9A9</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="grey">#F4F7FC</color>
+    <color name="blue">#5EC4DB</color>
+    <color name="darkblue">#1976D2</color>
+    <color name="orange">#f7931e</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="lightGreen">#18EC55</color>
+    <!-- res/values/colors.xml -->
+    <color name="colorRed">#FF0000</color>
+    <color name="defaultHeartColor">#808080</color>
+    <!-- Add background_material_light color -->
+    <color name="background_material_light">#ffffff</color>
+</resources>

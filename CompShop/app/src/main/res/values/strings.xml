@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">CompShop</string>
+    <string name="admob_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+        <item>Gender</item>
+    </string-array>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="auth_token">137ab2f334bd612f617bb5e5cdecb7ee79a37a3355ad6667b27d509dda94aa63</string>
+    <string name="secret_keu">1604FF5D-C51DF72D-13B442AA-EA7BB6D5-CABAD1ED-66103983</string>
+</resources>

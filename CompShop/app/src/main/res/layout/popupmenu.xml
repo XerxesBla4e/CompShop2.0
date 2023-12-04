@@ -1,0 +1,229 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="3dp"
+    app:cardElevation="18dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="16dp">
+
+            <!-- Food Image and Details -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Food Image -->
+                <ImageView
+                    android:id="@+id/imageView0"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/net" />
+
+                <!-- Food Details -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <!-- Food Name -->
+                    <TextView
+                        android:id="@+id/foodNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Product Name"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <!-- RatingBar -->
+                    <ImageButton
+                        android:id="@+id/imageButton"
+                        android:layout_width="92dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:src="@drawable/unfilled" />
+
+                    <!-- Amount with Discount Amount TextView on the right -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+
+                        <!-- Amount TextView -->
+                        <TextView
+                            android:id="@+id/amountTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="ush12000"
+                            android:textColor="@color/blue"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <!-- Discount Amount TextView -->
+                        <TextView
+                            android:id="@+id/discountAmountTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:text="- ush2000"
+                            android:textColor="#8A000000"
+                            android:textSize="14sp"
+                            android:textStyle="italic"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Quantity -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <!-- Quantity TextView -->
+
+                <!-- LinearLayout with ImageButtons for reducing and increasing quantity -->
+                <TextView
+                    android:id="@+id/quantityTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="Quantity: "
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="150dp"
+                    android:gravity="center_vertical">
+
+                    <!-- ImageButton to Reduce Quantity -->
+                    <ImageButton
+                        android:id="@+id/imageButtonRemove"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:backgroundTint="@color/white"
+                        android:contentDescription="Reduce"
+                        app:srcCompat="@drawable/ic_remove_24" />
+
+                    <!-- TextView to display Quantity -->
+                    <TextView
+                        android:id="@+id/textViewQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="1"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <!-- ImageButton to Increase Quantity -->
+                    <ImageButton
+                        android:id="@+id/imageButtonAdd"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:backgroundTint="@color/white"
+                        android:contentDescription="Increase"
+                        app:srcCompat="@drawable/ic_baseline_add_24" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:fontFamily="@font/montserrat"
+                android:lineSpacingExtra="8dp"
+                android:text="Strong and Reliable"
+                android:textColor="#666666"
+                android:textSize="16sp" />
+
+            <!-- Total Amount with Discount Price -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <!-- Total Amount TextView -->
+                <TextView
+                    android:id="@+id/totalAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Amount: "
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalAmountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ush10000"
+                    android:textColor="@color/blue"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Discount Price TextView -->
+                <TextView
+                    android:id="@+id/discountPriceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="Discount: - ush2000"
+                    android:textColor="#8A000000"
+                    android:textSize="14sp"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/containerCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/containerCheckBox2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <!-- Add to Cart Button -->
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/custom_button"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="ADD TO CART"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                app:backgroundTint="@color/blue" />
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.cardview.widget.CardView>
