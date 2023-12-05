@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     CardView cardView, cardView2, cardView3, cardView4;
     TextView textView, textView2;
     ConstraintLayout registerLayout, majorlayout;
-    ProgressBar progressBar;
+  //  ProgressBar progressBar;
     private static final int DURATION = 1000;
     private FirebaseAuth mAuth;
     private static final String TAG = "LOGIN";
@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 // Start the progress bar
-                progressBar.setVisibility(View.VISIBLE);
+//                progressBar.setVisibility(View.VISIBLE);
 
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                progressBar.setVisibility(View.GONE);
+                       //         progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getApplicationContext(), "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -216,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        progressBar.setVisibility(View.GONE);
+                      //  progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -229,7 +229,7 @@ public class LoginActivity extends AppCompatActivity {
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                progressBar.setVisibility(View.GONE);
+         //       progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     //since we are retrieving a snapshot of a single document
                     DocumentSnapshot snapshot = task.getResult();
