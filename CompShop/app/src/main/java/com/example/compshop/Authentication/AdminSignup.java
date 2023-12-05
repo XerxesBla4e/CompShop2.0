@@ -63,7 +63,7 @@ public class AdminSignup extends AppCompatActivity {
     public static final int PERMISSION_REQUEST_CODE = 444;
     String date, name, email, phonenumber, location, password, repass, gender;
     String district, city, state, country, address;
-    TextView adminSignup, login;
+    TextView login;
     Spinner spinner;
     Double latitude, longitude;
 
@@ -143,15 +143,6 @@ public class AdminSignup extends AppCompatActivity {
                 //displayLocation();
             }
         });*/
-
-        adminSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent x6 = new Intent(getApplicationContext(), AdminSignup.class);
-                x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(x6);
-            }
-        });
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED

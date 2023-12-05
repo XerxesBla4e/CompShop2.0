@@ -169,7 +169,8 @@
             android:layout_height="wrap_content"
             android:paddingStart="5dp"
             android:paddingLeft="5dp"
-            android:src="@drawable/twt2" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/twitter" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -192,7 +193,8 @@
             android:layout_height="wrap_content"
             android:paddingStart="5dp"
             android:paddingLeft="5dp"
-            android:src="@drawable/gmail1" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/gmail" />
     </androidx.cardview.widget.CardView>
 
     <!-- ... (previous code) ... -->
