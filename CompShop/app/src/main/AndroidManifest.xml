@@ -7,6 +7,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="true"
@@ -87,6 +94,12 @@
             android:name=".Authentication.ClientSignup"
             android:exported="false" />
         <activity
+            android:name=".Authentication.UpdateProfile"
+            android:exported="false" />
+        <activity
+            android:name=".Client.FavoritesActivity"
+            android:exported="false" />
+        <activity
             android:name=".Onboarding.MainActivity"
             android:exported="true">
             <intent-filter>
@@ -95,6 +108,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".Utils.PushNottificationService"
             android:exported="false">

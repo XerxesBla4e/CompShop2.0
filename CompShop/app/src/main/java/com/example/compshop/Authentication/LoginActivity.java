@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.compshop.Admin.AdminMain;
+import com.example.compshop.Client.ClientMain;
 import com.example.compshop.Models.Users;
 import com.example.compshop.Onboarding.MainActivity;
 import com.example.compshop.R;
@@ -240,7 +241,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             Intent mainIntent;
                             if (accountType.equals("Client")) {
-                                mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                mainIntent = new Intent(getApplicationContext(), ClientMain.class);
                             } else {
                                 mainIntent = new Intent(getApplicationContext(), AdminMain.class);
                             }

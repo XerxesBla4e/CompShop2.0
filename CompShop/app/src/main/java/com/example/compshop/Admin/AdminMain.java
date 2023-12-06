@@ -29,6 +29,7 @@ import com.example.compshop.Authentication.LoginActivity;
 import com.example.compshop.Authentication.UpdateProfile;
 import com.example.compshop.Interface.OnMoveToDetsListener;
 import com.example.compshop.Models.Order;
+import com.example.compshop.Onboarding.MainActivity;
 import com.example.compshop.R;
 import com.example.compshop.databinding.ActivityAdminMainBinding;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -179,7 +180,7 @@ public class AdminMain extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_logout) {
                     makeOffline();
                     firebaseAuth.signOut();
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                     return true;
                 } else if (item.getItemId() == R.id.nav_prof) {

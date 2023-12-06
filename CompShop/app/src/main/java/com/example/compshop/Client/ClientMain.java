@@ -21,6 +21,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -36,6 +37,7 @@ import com.example.compshop.Cart.DatabaseManager;
 import com.example.compshop.Interface.ActionType;
 import com.example.compshop.Interface.OnItemClickListener;
 import com.example.compshop.Models.Item;
+import com.example.compshop.Onboarding.MainActivity;
 import com.example.compshop.R;
 import com.example.compshop.databinding.HomeBinding;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -387,7 +389,7 @@ public class ClientMain extends AppCompatActivity {
         } else if (id == R.id.action_logout) {
             makeOffline();
             firebaseAuth.signOut();
-            startActivity(new Intent(ClientMain.this, LoginActivity.class));
+            startActivity(new Intent(ClientMain.this, MainActivity.class));
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -403,7 +405,7 @@ public class ClientMain extends AppCompatActivity {
                     x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(x);
                     return true;
-                } else if (item.getItemId() == R.id.nav_prof) {
+                } else if (item.getItemId() == R.id.nav_prof2) {
                     Intent x6 = new Intent(ClientMain.this, UpdateProfile.class);
                     x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(x6);
