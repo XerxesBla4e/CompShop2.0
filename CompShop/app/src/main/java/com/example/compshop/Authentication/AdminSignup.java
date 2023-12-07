@@ -234,12 +234,18 @@ public class AdminSignup extends AppCompatActivity {
                     // Proceed with the special key
                     // Call a method or perform the desired action with the special key
                     if (specialKey.equals(specialk)) {
-                        processData();
+                        processData(); // Call the processData method to handle user creation
+                    } else {
+                        Toast.makeText(AdminSignup.this, "Invalid special key", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
+
 
     private void processData() {
         progressBar.setIndeterminate(true);
@@ -343,10 +349,17 @@ public class AdminSignup extends AppCompatActivity {
         }*/
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getApplicationContext(), "Password field can't be empty", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "Password field can't be empty", Toast.LENGTH_SHORT).show();
             adminSignupBinding.passwordEdit.requestFocus();
             return false;
-        } /*else if (!password.matches(passwordRegex)) {
+        }
+
+        if (password.length() < 8) {
+            Toast.makeText(getApplicationContext(), "Password Should be Longer than or equal to 8 characters", Toast.LENGTH_SHORT).show();
+            adminSignupBinding.passwordEdit.requestFocus();
+            return false;
+        }
+        /*else if (!password.matches(passwordRegex)) {
             Toast.makeText(getApplicationContext(),"Password must contain at least 8 characters including one uppercase letter," +
                     " one lowercase letter, one digit, and one special character",Toast.LENGTH_SHORT);
             activitySignupBinding.passwordEdit.requestFocus();
@@ -463,4 +476,5 @@ public class AdminSignup extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 }

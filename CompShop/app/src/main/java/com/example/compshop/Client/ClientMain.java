@@ -347,19 +347,46 @@ public class ClientMain extends AppCompatActivity {
             newprice2.setVisibility(View.GONE);
         }
     }
-
     private void checkgrantpermission() {
         // Check and request location permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // Permission granted, proceed with location updates
-            requestLocationUpdates();
+            if (locationManager != null) {
+                requestLocationUpdates();
+            } else {
+                Log.e("ClientMain", "locationManager is null");
+                // Handle the null case appropriately, for example, you can initialize locationManager here
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (locationManager != null) {
+                    locationListener = new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            updateUserLocation(location.getLatitude(), location.getLongitude());
+                        }
+
+                        @Override
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String provider) {
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String provider) {
+                        }
+                    };
+                    requestLocationUpdates();
+                } else {
+                    Log.e("ClientMain", "Failed to initialize locationManager");
+                    // Handle the failure to initialize locationManager
+                }
+            }
         } else {
             // Permission not granted, request it
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
