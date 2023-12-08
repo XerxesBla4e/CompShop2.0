@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.compshop.Admin.AdminMain;
+import com.example.compshop.Client.ClientMain;
 import com.example.compshop.Models.Users;
 import com.example.compshop.Onboarding.MainActivity;
 import com.example.compshop.R;
@@ -385,7 +386,7 @@ public class UpdateProfile extends AppCompatActivity {
                                 String accountType = userProfile.getAccounttype();
 
                                 if (accountType.equals("Client")) {
-                                    startActivity(new Intent(UpdateProfile.this, MainActivity.class));
+                                    startActivity(new Intent(UpdateProfile.this, ClientMain.class));
                                 } else {
                                     startActivity(new Intent(getApplicationContext(), AdminMain.class));
 
