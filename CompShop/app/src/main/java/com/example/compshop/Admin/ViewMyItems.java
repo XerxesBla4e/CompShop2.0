@@ -70,7 +70,15 @@ public class ViewMyItems extends AppCompatActivity {
                 if (direction == ItemTouchHelper.RIGHT) {
                     showConfirmationDialog(viewHolder);
                 } else if (direction == ItemTouchHelper.LEFT) {
-                    // Update the item
+                    // Retrieve the item data associated with the swiped position
+                    int swipedPosition = viewHolder.getAdapterPosition();
+                    if (swipedPosition != RecyclerView.NO_POSITION) {
+                        Item swipedItem = viewItemAdapter.getItemAtPosition(swipedPosition);
+                        Intent updateIntent = new Intent(getApplicationContext(), AddItem.class);
+                        updateIntent.putExtra("UPDATE_ITEM", swipedItem);
+                        updateIntent.putExtra("action", "update");
+                        startActivity(updateIntent);
+                    }
                 } else {
                     viewItemAdapter.notifyDataSetChanged(); // Refresh the adapter to undo the swipe action
                 }

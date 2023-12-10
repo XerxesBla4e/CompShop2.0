@@ -91,6 +91,9 @@
             android:name=".Authentication.AdminSignup"
             android:exported="false" />
         <activity
+            android:name=".Admin.AddCategory"
+            android:exported="false" />
+        <activity
             android:name=".Authentication.ClientSignup"
             android:exported="false" />
         <activity

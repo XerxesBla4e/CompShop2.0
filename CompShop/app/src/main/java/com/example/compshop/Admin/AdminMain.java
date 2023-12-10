@@ -28,7 +28,9 @@ import com.example.compshop.Admin.Handler.OrderDeletionHandler;
 import com.example.compshop.Admin.Interface.OnOrderDeletedListener;
 import com.example.compshop.Authentication.LoginActivity;
 import com.example.compshop.Authentication.UpdateProfile;
+import com.example.compshop.Dialogs.AddTransactionDialog;
 import com.example.compshop.Interface.OnMoveToDetsListener;
+import com.example.compshop.Location.LocationManagerHelper;
 import com.example.compshop.Models.Order;
 import com.example.compshop.Onboarding.MainActivity;
 import com.example.compshop.R;
@@ -70,7 +72,7 @@ public class AdminMain extends AppCompatActivity {
     private static final String TAG = "Location";
     private LocationListener locationListener;
     ShimmerFrameLayout shimmerFrameLayout;
-
+    LocationManagerHelper locationManagerHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,29 +83,6 @@ public class AdminMain extends AppCompatActivity {
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
-        checkgrantpermission();
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);/*
-           Is a system service that provides access to the device's location services
-        */
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                updateUserLocation(location.getLatitude(), location.getLongitude());
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        };
         initViews(activityAdminMainBinding);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -131,9 +110,8 @@ public class AdminMain extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent x0 = new Intent(getApplicationContext(), AddItem.class);
-                x0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(x0);
+                AddTransactionDialog addTransactionDialog = new AddTransactionDialog();
+                addTransactionDialog.show(getSupportFragmentManager(), "add transaction dialog");
             }
         });
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -161,11 +139,12 @@ public class AdminMain extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
+
+        // Initialize the LocationManagerHelper
+        locationManagerHelper = new LocationManagerHelper(this, null, null, uid1);
+
+        // Call the location-related tasks
+        locationManagerHelper.checkAndRequestLocationPermissions();
     }
 
     private void initBottomNavView() {
@@ -257,96 +236,12 @@ public class AdminMain extends AppCompatActivity {
         orderAdapter.notifyDataSetChanged();
     }
 
-    private void checkgrantpermission() {
-        // Check and request location permissions
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted, proceed with location updates
-            if (locationManager != null) {
-                requestLocationUpdates();
-            } else {
-                Log.e("ClientMain", "locationManager is null");
-                // Handle the null case appropriately, for example, you can initialize locationManager here
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if (locationManager != null) {
-                    locationListener = new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                            updateUserLocation(location.getLatitude(), location.getLongitude());
-                        }
-
-                        @Override
-                        public void onStatusChanged(String provider, int status, Bundle extras) {
-                        }
-
-                        @Override
-                        public void onProviderEnabled(String provider) {
-                        }
-
-                        @Override
-                        public void onProviderDisabled(String provider) {
-                        }
-                    };
-                    requestLocationUpdates();
-                } else {
-                    Log.e("ClientMain", "Failed to initialize locationManager");
-                    // Handle the failure to initialize locationManager
-                }
-            }
-        } else {
-            // Permission not granted, request it
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        }
-    }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requestLocationUpdates();
-            } else {
-                Toast.makeText(this, "Location permission is required for the app to function correctly." +
-                        " Please grant the permission in the app settings.", Toast.LENGTH_SHORT).show();
-            }
-        }
+        // Delegate the permission result to LocationManagerHelper
+        locationManagerHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
-    //associates the location listener(Callback listener) with the location manager
-    private void requestLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-    }
-
-    private void updateUserLocation(double latitude, double longitude) {
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        DocumentReference documentRef = firestore.collection("users").document(uid1);
-
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("latitude", "" + latitude);
-        updateData.put("longitude", "" + longitude);
-
-        documentRef.update(updateData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Update successful
-                        // Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //  Log.d(TAG, "" + e);
-                        // Handle any errors
-                        // Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     private void showConfirmationDialog(RecyclerView.ViewHolder viewHolder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AdminMain.this);
         builder.setTitle("Confirm Delete")
@@ -364,7 +259,6 @@ public class AdminMain extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
     private void deleteOrderItem(RecyclerView.ViewHolder viewHolder) {
         int position = viewHolder.getAdapterPosition();
         if (position != RecyclerView.NO_POSITION) {

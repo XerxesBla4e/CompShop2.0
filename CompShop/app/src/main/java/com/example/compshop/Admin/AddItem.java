@@ -1,6 +1,7 @@
 package com.example.compshop.Admin;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.compshop.Models.Item;
 import com.example.compshop.Utils.FileUtils;
 import com.example.compshop.databinding.AddItemactivityBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -36,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
@@ -59,6 +62,7 @@ public class AddItem extends AppCompatActivity {
     private CharSequence[] options = {"Camera", "Gallery", "Cancel"};
     public String selectedImage;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +83,7 @@ public class AddItem extends AppCompatActivity {
         initViews();
         setListeners();
 
+
         additembtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,11 +101,123 @@ public class AddItem extends AppCompatActivity {
                     }
                     linearLayout.addView(progressBar, layoutParams);
 
-                    uploadItem();
+                    Intent intent = getIntent();
+                    if (intent.hasExtra("UPDATE_ITEM")) {
+                        // Update action
+                        updateItem();
+                    } else {
+                        // Add action
+                        uploadItem();
+                    }
                 }
             }
         });
+
+        
+        Intent intent = getIntent();
+        if (intent.hasExtra("UPDATE_ITEM")) {
+            // Update action
+            Item updateItem = (Item) intent.getSerializableExtra("UPDATE_ITEM");
+            populateUIForUpdate(updateItem);
+            additembtn.setText("Update Product");
+        } else {
+            // Add action
+            additembtn.setText("Add Product");
+        }
     }
+
+    private void updateItem() {
+        // Retrieve the updateItem object from the intent
+        Item updateItem = (Item) getIntent().getSerializableExtra("UPDATE_ITEM");
+
+        // Update the fields of updateItem with the new values
+        updateItem.setName(addItemactivityBinding.fnameEditText.getText().toString());
+        updateItem.setCategory(addItemactivityBinding.nameEditCategory.getText().toString());
+        updateItem.setDescription(addItemactivityBinding.nameEditDescription.getText().toString());
+        updateItem.setPrice(addItemactivityBinding.nameEditPrice.getText().toString());
+
+        if (discavailable) {
+            updateItem.setDiscount(addItemactivityBinding.discountPriceEditText.getText().toString());
+            updateItem.setDiscountdescription(addItemactivityBinding.discountDescriptionEditText.getText().toString());
+        } else {
+            updateItem.setDiscount("0");
+            updateItem.setDiscountdescription("0%");
+        }
+
+        // Check if the image has been updated
+        if (uri != null && !uri.equals(Uri.parse(updateItem.getImage()))) {
+            uploadItemImage(updateItem);
+        } else {
+            updateItemInFirestore(updateItem);
+        }
+    }
+
+    private void updateItemInFirestore(@NonNull Item updateItem) {
+        // Update the item in Firestore
+        DocumentReference userRef = firestore.collection("users").document(uid);
+        CollectionReference itemCollection = userRef.collection("Products");
+
+        itemCollection.document(updateItem.getItem_Id()).set(updateItem)
+                .addOnSuccessListener(aVoid -> {
+                    progressBar.setVisibility(View.GONE);
+                    setUiEnabled(true);
+                    Toast.makeText(AddItem.this, "Item Updated...", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    setUiEnabled(true);
+                    Toast.makeText(AddItem.this, "Update Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void populateUIForUpdate(@NonNull Item updateItem) {
+        // Populate the UI fields with the data of the item being updated
+        addItemactivityBinding.fnameEditText.setText(updateItem.getName());
+        addItemactivityBinding.nameEditCategory.setText(updateItem.getCategory());
+        addItemactivityBinding.nameEditDescription.setText(updateItem.getDescription());
+        addItemactivityBinding.nameEditPrice.setText(updateItem.getPrice());
+
+        // Check if the item has a discount
+        if (!TextUtils.isEmpty(updateItem.getDiscount()) && !TextUtils.isEmpty(updateItem.getDiscountdescription())) {
+            addItemactivityBinding.discountSwitch.setChecked(true);
+            addItemactivityBinding.discountPriceEditText.setText(updateItem.getDiscount());
+            addItemactivityBinding.discountDescriptionEditText.setText(updateItem.getDiscountdescription());
+        } else {
+            addItemactivityBinding.discountSwitch.setChecked(false);
+            addItemactivityBinding.discountPriceEditText.setText("");
+            addItemactivityBinding.discountDescriptionEditText.setText("");
+        }
+
+        // Load the item image using Picasso or any other image-loading library
+        String imageUrl = updateItem.getImage();
+        if (!TextUtils.isEmpty(imageUrl)) {
+            Picasso.get().load(imageUrl).into(imageView);
+        }
+
+
+    }
+
+    private void uploadItemImage(Item updateItem) {
+        // Get the timestamp for the new image
+        final String timestamp = String.valueOf(System.currentTimeMillis());
+        StorageReference filepath = storageReference.child("imagePost").child(timestamp);
+        // Upload the new image to Firebase Storage
+        UploadTask uploadTask = filepath.putFile(uri);
+
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            filepath.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                updateItem.setImage(downloadUri.toString());
+
+                updateItemInFirestore(updateItem);
+            }).addOnFailureListener(e -> {
+                handleUploadFailure(e);
+            });
+        }).addOnFailureListener(e -> {
+            handleUploadFailure(e);
+        });
+    }
+
 
     private void setUiEnabled(boolean enabled) {
         additembtn.setEnabled(enabled);

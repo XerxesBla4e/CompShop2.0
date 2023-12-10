@@ -46,6 +46,10 @@ public class ViewItemAdapter extends RecyclerView.Adapter<ViewItemAdapter.ViewHo
         return itemList.size();
     }
 
+    public Item getItemAtPosition(int swipedPosition) {
+        return itemList.get(swipedPosition);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView itemImage;
         private TextView itemName;

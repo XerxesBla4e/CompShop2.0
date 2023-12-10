@@ -514,11 +514,9 @@ public class CartActivity extends AppCompatActivity {
         new DatabaseTask(databaseManager, new ItemCallback() {
             @Override
             public void onDatabaseTaskComplete(List<Item> itemList) {
-                // Update the UI with the retrieved items
                 if (itemList != null) {
                     adapter.submitList(itemList);
 
-                    // If you have any other UI updates, do them here
                     computeTotalPrice();
                 }
             }

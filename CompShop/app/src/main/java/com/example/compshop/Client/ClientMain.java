@@ -28,15 +28,19 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.compshop.Adapters.ItemAdapter;
+import com.example.compshop.Adapters.MyAdapter;
 import com.example.compshop.Authentication.LoginActivity;
 import com.example.compshop.Authentication.UpdateProfile;
 import com.example.compshop.Cart.DatabaseManager;
 import com.example.compshop.Interface.ActionType;
 import com.example.compshop.Interface.OnItemClickListener;
+import com.example.compshop.Location.LocationManagerHelper;
 import com.example.compshop.Models.Item;
+import com.example.compshop.Models.category;
 import com.example.compshop.Onboarding.MainActivity;
 import com.example.compshop.R;
 import com.example.compshop.databinding.HomeBinding;
@@ -69,24 +73,22 @@ public class ClientMain extends AppCompatActivity {
     private ItemAdapter itemAdapter;
     private List<Item> itemList = new ArrayList<>();
     private boolean loading = true;
-    ShimmerFrameLayout shimmerLayout;
+    ShimmerFrameLayout shimmerLayout, shimmerLayout1;
     private FirebaseFirestore db;
     DatabaseManager databasemanager;
     private FirebaseAuth firebaseAuth;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
     private FirebaseUser firebaseUser;
     private SearchView searchView;
     private String uid1;
     BottomNavigationView bottomNavigationView;
     Toolbar toolbar;
-    // private static final int LOGIN_REQUEST_CODE = 439;
 
     //Dialog instances
     private TextView name, price2, newprice2, description, totalamount, quantitytextview, viewall;
     private ImageButton addQty, reduceQty;
     private RatingBar ratingBar;
     private Button addToCartBtn;
+    LocationManagerHelper locationManagerHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,35 +99,13 @@ public class ClientMain extends AppCompatActivity {
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
-
-        checkgrantpermission();
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                updateUserLocation(location.getLatitude(), location.getLongitude());
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
         initViews(homeBinding);
 
         setSupportActionBar(toolbar);
 
         // Start the shimmer effect
         shimmerLayout.startShimmer();
+        shimmerLayout1.startShimmer();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         db = FirebaseFirestore.getInstance();
@@ -152,10 +132,18 @@ public class ClientMain extends AppCompatActivity {
             }
         });
 
+        // Initialize the LocationManagerHelper
+        locationManagerHelper = new LocationManagerHelper(this, null, null, uid1);
+
+        // Call the location-related tasks
+        locationManagerHelper.checkAndRequestLocationPermissions();
+
         initBottomNavView();
 
         itemAdapter = new ItemAdapter(getApplicationContext());
         recyclerView.setAdapter(itemAdapter);
+
+        fetchCategory();
 
         // Add a scroll listener to load more items when needed
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -231,100 +219,105 @@ public class ClientMain extends AppCompatActivity {
     }
 
     private void callpopupdialog(Item item) {
-        DialogPlus dialogPlus = DialogPlus.newDialog(getApplicationContext())
-                .setContentHolder(new ViewHolder(R.layout.popupmenu))
-                .setExpanded(true, 1100)
-                .setGravity(Gravity.BOTTOM) // Set the dialog to appear from the bottom
-                .create();
-        View dialogView = dialogPlus.getHolderView();
-
-        ImageView imageView1 = dialogView.findViewById(R.id.imageView0);
-        addQty = dialogView.findViewById(R.id.imageButtonAdd);
-        reduceQty = dialogView.findViewById(R.id.imageButtonRemove);
-        name = dialogView.findViewById(R.id.foodNameTextView);
-        name.setText(item.getName());
-        description = dialogView.findViewById(R.id.descriptionTextView);
-        description.setText(item.getDescription());
-        quantitytextview = dialogView.findViewById(R.id.textViewQuantity);
-        quantitytextview.setText(String.valueOf(item.getQuantity()));
-        addToCartBtn = dialogView.findViewById(R.id.button2);
-        price2 = dialogView.findViewById(R.id.amountTextView);
-        price2.setText(item.getPrice());
-        newprice2 = dialogView.findViewById(R.id.discountAmountTextView);
-        totalamount = dialogView.findViewById(R.id.totalAmountTextView);
-        totalamount.setText(String.valueOf(item.getTotal()));
-
-        computePriceDiscount(item, price2, newprice2);
-
-        addQty.setOnClickListener(new View.OnClickListener() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                int quantity = item.getQuantity();
-                quantity++; // Increment the quantity
+            public void run() {
+                DialogPlus dialogPlus = DialogPlus.newDialog(getApplicationContext())
+                        .setContentHolder(new ViewHolder(R.layout.popupmenu))
+                        .setExpanded(true, 1100)
+                        .setGravity(Gravity.BOTTOM) // Set the dialog to appear from the bottom
+                        .create();
+                View dialogView = dialogPlus.getHolderView();
 
-                // Update the quantity and total in the food object
-                item.setQuantity(quantity);
-
+                ImageView imageView1 = dialogView.findViewById(R.id.imageView0);
+                addQty = dialogView.findViewById(R.id.imageButtonAdd);
+                reduceQty = dialogView.findViewById(R.id.imageButtonRemove);
+                name = dialogView.findViewById(R.id.foodNameTextView);
+                name.setText(item.getName());
+                description = dialogView.findViewById(R.id.descriptionTextView);
+                description.setText(item.getDescription());
+                quantitytextview = dialogView.findViewById(R.id.textViewQuantity);
                 quantitytextview.setText(String.valueOf(item.getQuantity()));
+                addToCartBtn = dialogView.findViewById(R.id.button2);
+                price2 = dialogView.findViewById(R.id.amountTextView);
+                price2.setText(item.getPrice());
+                newprice2 = dialogView.findViewById(R.id.discountAmountTextView);
+                totalamount = dialogView.findViewById(R.id.totalAmountTextView);
                 totalamount.setText(String.valueOf(item.getTotal()));
-            }
-        });
 
-        reduceQty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int quantity = item.getQuantity();
-                if (quantity > 1) {
-                    quantity--; // Decrement the quantity
+                computePriceDiscount(item, price2, newprice2);
 
-                    // Update the quantity and total in the food object
-                    item.setQuantity(quantity);
-                    quantitytextview.setText(String.valueOf(item.getQuantity()));
-                    totalamount.setText(String.valueOf(item.getTotal()));
-                }
-            }
-        });
+                addQty.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int quantity = item.getQuantity();
+                        quantity++; // Increment the quantity
 
-        addToCartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Assuming item.getItemId() is a unique identifier for each item
-                long itemId = Long.parseLong(item.getItem_Id());
+                        // Update the quantity and total in the food object
+                        item.setQuantity(quantity);
 
-                // Check if the item with the same ID already exists in the cart
-                if (databasemanager.isItemInCart(itemId)) {
-                    Toast.makeText(view.getContext(), "Item is already in the cart", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Item is not in the cart, proceed to add it
-                    Item item2 = new Item(item.getName(), item.getCategory(), item.getDescription(), item.getPrice(),
-                            item.getItem_Id(), item.getTimestamp(), item.getUid(), item.getImage(), item.getQuantity(), item.getTotal());
-
-                    // Update the total based on the provided discount and discount description
-                    item2.updateTotal(item.getDiscount(), item.getDiscountdescription());
-
-                    int res = (int) databasemanager.addItem(item2);
-
-                    if (res > 0) {
-                        Toast.makeText(view.getContext(), "ADDED TO CART", Toast.LENGTH_SHORT).show();
+                        quantitytextview.setText(String.valueOf(item.getQuantity()));
+                        totalamount.setText(String.valueOf(item.getTotal()));
                     }
+                });
+
+                reduceQty.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int quantity = item.getQuantity();
+                        if (quantity > 1) {
+                            quantity--; // Decrement the quantity
+
+                            // Update the quantity and total in the food object
+                            item.setQuantity(quantity);
+                            quantitytextview.setText(String.valueOf(item.getQuantity()));
+                            totalamount.setText(String.valueOf(item.getTotal()));
+                        }
+                    }
+                });
+
+                addToCartBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Assuming item.getItemId() is a unique identifier for each item
+                        long itemId = Long.parseLong(item.getItem_Id());
+
+                        // Check if the item with the same ID already exists in the cart
+                        if (databasemanager.isItemInCart(itemId)) {
+                            Toast.makeText(view.getContext(), "Item is already in the cart", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Item is not in the cart, proceed to add it
+                            Item item2 = new Item(item.getName(), item.getCategory(), item.getDescription(), item.getPrice(),
+                                    item.getItem_Id(), item.getTimestamp(), item.getUid(), item.getImage(), item.getQuantity(), item.getTotal());
+
+                            // Update the total based on the provided discount and discount description
+                            item2.updateTotal(item.getDiscount(), item.getDiscountdescription());
+
+                            int res = (int) databasemanager.addItem(item2);
+
+                            if (res > 0) {
+                                Toast.makeText(view.getContext(), "ADDED TO CART", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+
+                String imagePath = item.getImage();
+                try {
+                    if (imagePath != null && !imagePath.isEmpty()) {
+                        Picasso.get().load(item.getImage()).into(imageView1);
+                    } else {
+                        imageView1.setImageResource(R.mipmap.ic_launcher);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    imageView1.setImageResource(R.mipmap.ic_launcher);
                 }
+                quantitytextview.setText(String.valueOf(item.getQuantity()));
+
+                dialogPlus.show();
             }
         });
-
-        String imagePath = item.getImage();
-        try {
-            if (imagePath != null && !imagePath.isEmpty()) {
-                Picasso.get().load(item.getImage()).into(imageView1);
-            } else {
-                imageView1.setImageResource(R.mipmap.ic_launcher);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            imageView1.setImageResource(R.mipmap.ic_launcher);
-        }
-        quantitytextview.setText(String.valueOf(item.getQuantity()));
-
-        dialogPlus.show();
     }
 
     private void computePriceDiscount(Item item, TextView price2, TextView newprice2) {
@@ -347,58 +340,12 @@ public class ClientMain extends AppCompatActivity {
             newprice2.setVisibility(View.GONE);
         }
     }
-    private void checkgrantpermission() {
-        // Check and request location permissions
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted, proceed with location updates
-            if (locationManager != null) {
-                requestLocationUpdates();
-            } else {
-                Log.e("ClientMain", "locationManager is null");
-                // Handle the null case appropriately, for example, you can initialize locationManager here
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if (locationManager != null) {
-                    locationListener = new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                            updateUserLocation(location.getLatitude(), location.getLongitude());
-                        }
-
-                        @Override
-                        public void onStatusChanged(String provider, int status, Bundle extras) {
-                        }
-
-                        @Override
-                        public void onProviderEnabled(String provider) {
-                        }
-
-                        @Override
-                        public void onProviderDisabled(String provider) {
-                        }
-                    };
-                    requestLocationUpdates();
-                } else {
-                    Log.e("ClientMain", "Failed to initialize locationManager");
-                    // Handle the failure to initialize locationManager
-                }
-            }
-        } else {
-            // Permission not granted, request it
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requestLocationUpdates();
-            } else {
-                Toast.makeText(this, "Location permission is required for the app to function correctly." +
-                        " Please grant the permission in the app settings.", Toast.LENGTH_SHORT).show();
-            }
-        }
+        // Delegate the permission result to LocationManagerHelper
+        locationManagerHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 
@@ -500,44 +447,11 @@ public class ClientMain extends AppCompatActivity {
         shimmerLayout.setVisibility(View.GONE);
     }
 
-    private void requestLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-    }
-
-    private void updateUserLocation(double latitude, double longitude) {
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        DocumentReference documentRef = firestore.collection("users").document(uid1);
-
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("latitude", "" + latitude);
-        updateData.put("longitude", "" + longitude);
-
-        documentRef.update(updateData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Update successful
-                        // Toast.makeText(getApplicationContext(), "Location updated", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //  Log.d(TAG, "" + e);
-                        // Handle any errors
-                        // Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     private void initViews(HomeBinding homeBinding) {
         recyclerView = homeBinding.recyclerViewpopv;
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         shimmerLayout = homeBinding.shimmerLayout;
+        shimmerLayout1 = homeBinding.shimmerLayout2;
         searchView = homeBinding.searchView;
         bottomNavigationView = homeBinding.bottomNavgation;
         toolbar = homeBinding.toolbar;
@@ -545,9 +459,26 @@ public class ClientMain extends AppCompatActivity {
     }
 
     private void updateUIAndStopShimmer() {
-        shimmerLayout.stopShimmer();
-        shimmerLayout.setVisibility(View.GONE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // UI-related code here
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
+            }
+        });
         loading = true;
+    }
+
+    private void updateUIAndStopShimmer1() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // UI-related code here
+                shimmerLayout1.stopShimmer();
+                shimmerLayout1.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void fetchItems() {
@@ -570,8 +501,15 @@ public class ClientMain extends AppCompatActivity {
                             }
 
                             // Update the adapter's item list and notify the change
-                            itemAdapter.updateItemList(itemList);
-                            itemAdapter.notifyDataSetChanged();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Update the adapter's item list and notify the change
+                                    itemAdapter.updateItemList(itemList);
+                                    itemAdapter.notifyDataSetChanged();
+                                }
+                            });
+
 
                             // Common code for updating UI and stopping shimmer effect
                             updateUIAndStopShimmer();
@@ -621,8 +559,14 @@ public class ClientMain extends AppCompatActivity {
                             itemList.addAll(newItems);
 
                             // Update the adapter's item list and notify the change
-                            itemAdapter.updateItemList(itemList);
-                            itemAdapter.notifyDataSetChanged();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Update the adapter's item list and notify the change
+                                    itemAdapter.updateItemList(itemList);
+                                    itemAdapter.notifyDataSetChanged();
+                                }
+                            });
 
                             // Common code for updating UI and stopping shimmer effect
                             updateUIAndStopShimmer();
@@ -641,12 +585,54 @@ public class ClientMain extends AppCompatActivity {
         });
     }
 
+    private void fetchCategory() {
+        ArrayList<category> categoryArrayList = new ArrayList<>();
+        RecyclerView recyclerView1 = homeBinding.recyclerViewHorizontal;
+        recyclerView1.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        MyAdapter myAdapter = new MyAdapter(getApplicationContext(), categoryArrayList);
+
+        Query userQuery = db.collection("users").whereEqualTo("accounttype", "Admin");
+
+        userQuery.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                categoryArrayList.clear(); // Clear existing items before adding new ones
+
+                for (QueryDocumentSnapshot userDocument : task.getResult()) {
+                    CollectionReference productsCollection = userDocument.getReference().collection("Categories");
+
+                    Query productsQuery = productsCollection.limit(10);
+
+                    productsQuery.get().addOnCompleteListener(productsTask -> {
+                        if (productsTask.isSuccessful()) {
+                            for (QueryDocumentSnapshot productDocument : productsTask.getResult()) {
+                                category item = productDocument.toObject(category.class);
+                                categoryArrayList.add(item);
+                            }
+                            // Notify the adapter of the data change
+                            myAdapter.notifyDataSetChanged();
+                            updateUIAndStopShimmer1();
+                        } else {
+                            Log.d("TAG", "Error getting category documents: ", productsTask.getException());
+                            // Common code for updating UI and stopping shimmer effect
+                            updateUIAndStopShimmer1();
+                        }
+                    });
+                }
+                // Set the adapter outside the loop after all data is collected
+                recyclerView1.setAdapter(myAdapter);
+            } else {
+                Log.d("TAG", "Error getting user documents: ", task.getException());
+                // Common code for updating UI and stopping shimmer effect
+                updateUIAndStopShimmer1();
+            }
+        });
+    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (locationManager != null) {
-            locationManager.removeUpdates(locationListener);
-        }
+        // Stop location updates in onDestroy
+        locationManagerHelper.stopLocationUpdates();
     }
 }

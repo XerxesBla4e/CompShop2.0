@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         Onboardingitem itemPayOnline = new Onboardingitem();
         itemPayOnline.setTitle("Pay Your Bill Online");
-        itemPayOnline.setDescription("Flutter Rave payment is a feature of online, mobile and telephone banking");
+        itemPayOnline.setDescription("Integrated with GoSente to help you make payments seamlessly from anywhere at anytime");
         itemPayOnline.setImage(R.drawable.test);
 
         Onboardingitem itemOnTheWay = new Onboardingitem();

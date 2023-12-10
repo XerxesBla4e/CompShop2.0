@@ -18,10 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FCMSend {
-    // private static String BASE_URL = "https://fcm.googleapis.com/fcm/send";
-    // private static String SERVER_KEY = "key=AAAApwkT1So:APA91bHu7-mdluz2dvUU2UeZgv1R_497RjSkMOGjUlbbbyQloMB1_G8FHeMXHDLp2t9SY2cs9dizfVmBENDZ8M-RhF_agiOdL1Gxk19W6AUccYP679KIp7d5EcKOLORIK3P95VoAEcZs";
-
-
     public static void pushNotification(Context context, String token, String title, String message) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

@@ -1,6 +1,10 @@
 package com.example.compshop.Models;
 
-public class Item {
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Item implements Serializable {
     private int id;
     private String name;
     private String category;
