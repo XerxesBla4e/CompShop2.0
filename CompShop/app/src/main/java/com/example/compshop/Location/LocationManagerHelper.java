@@ -37,6 +37,8 @@ public class LocationManagerHelper {
         this.locationListener = locationListener;
         this.locationManager = locationManager;
         this.uid = uid;
+
+        initializeLocationManager();
     }
 
     public void checkAndRequestLocationPermissions() {
