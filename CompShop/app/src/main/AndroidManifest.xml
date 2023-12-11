@@ -61,9 +61,6 @@
             android:name=".Authentication.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".Onboarding.SplashScreen"
-            android:exported="false" />
-        <activity
             android:name=".Admin.AddItem"
             android:exported="false" />
         <activity
@@ -103,7 +100,7 @@
             android:name=".Client.FavoritesActivity"
             android:exported="false" />
         <activity
-            android:name=".Onboarding.MainActivity"
+            android:name=".Onboarding.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

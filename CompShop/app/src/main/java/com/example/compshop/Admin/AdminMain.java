@@ -28,11 +28,13 @@ import com.example.compshop.Admin.Handler.OrderDeletionHandler;
 import com.example.compshop.Admin.Interface.OnOrderDeletedListener;
 import com.example.compshop.Authentication.LoginActivity;
 import com.example.compshop.Authentication.UpdateProfile;
+import com.example.compshop.Client.ClientMain;
 import com.example.compshop.Dialogs.AddTransactionDialog;
 import com.example.compshop.Interface.OnMoveToDetsListener;
 import com.example.compshop.Location.LocationManagerHelper;
 import com.example.compshop.Models.Order;
-import com.example.compshop.Onboarding.MainActivity;
+
+import com.example.compshop.Onboarding.SplashScreen;
 import com.example.compshop.R;
 import com.example.compshop.databinding.ActivityAdminMainBinding;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -141,7 +143,7 @@ public class AdminMain extends AppCompatActivity {
         });
 
         // Initialize the LocationManagerHelper
-        locationManagerHelper = new LocationManagerHelper(this, null, null, uid1);
+        locationManagerHelper = new LocationManagerHelper(this, null, null);
 
         // Call the location-related tasks
         locationManagerHelper.checkAndRequestLocationPermissions();
@@ -160,7 +162,7 @@ public class AdminMain extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_logout) {
                     makeOffline();
                     firebaseAuth.signOut();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(AdminMain.this, SplashScreen.class));
                     finish();
                     return true;
                 } else if (item.getItemId() == R.id.nav_prof) {

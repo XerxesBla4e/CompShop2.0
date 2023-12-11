@@ -41,7 +41,7 @@ import com.example.compshop.Interface.OnItemClickListener;
 import com.example.compshop.Location.LocationManagerHelper;
 import com.example.compshop.Models.Item;
 import com.example.compshop.Models.category;
-import com.example.compshop.Onboarding.MainActivity;
+import com.example.compshop.Onboarding.SplashScreen;
 import com.example.compshop.R;
 import com.example.compshop.databinding.HomeBinding;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -133,7 +133,7 @@ public class ClientMain extends AppCompatActivity {
         });
 
         // Initialize the LocationManagerHelper
-        locationManagerHelper = new LocationManagerHelper(this, null, null, uid1);
+        locationManagerHelper = new LocationManagerHelper(this, null, null);
 
         // Call the location-related tasks
         locationManagerHelper.checkAndRequestLocationPermissions();
@@ -363,7 +363,7 @@ public class ClientMain extends AppCompatActivity {
         } else if (id == R.id.action_logout) {
             makeOffline();
             firebaseAuth.signOut();
-            startActivity(new Intent(ClientMain.this, MainActivity.class));
+            startActivity(new Intent(ClientMain.this, SplashScreen.class));
             finish();
         }
         return super.onOptionsItemSelected(item);

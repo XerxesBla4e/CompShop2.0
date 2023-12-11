@@ -18,6 +18,8 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -30,13 +32,22 @@ public class LocationManagerHelper {
     private LocationListener locationListener;
     private LocationManager locationManager;
 
-    private String uid;
+   // private String uid;
+    FirebaseAuth firebaseAuth;
 
-    public LocationManagerHelper(Context context, LocationListener locationListener, LocationManager locationManager, String uid) {
+    FirebaseFirestore firestore;
+    FirebaseUser user;
+    String uid1;
+
+    public LocationManagerHelper(Context context, LocationListener locationListener, LocationManager locationManager) {
         this.context = context;
         this.locationListener = locationListener;
         this.locationManager = locationManager;
-        this.uid = uid;
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            uid1 = user.getUid();
+        }
 
         initializeLocationManager();
     }
@@ -70,7 +81,7 @@ public class LocationManagerHelper {
             locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    updateUserLocation(location.getLatitude(), location.getLongitude(), uid);
+                    updateUserLocation(location.getLatitude(), location.getLongitude());
                 }
 
                 @Override
@@ -112,9 +123,9 @@ public class LocationManagerHelper {
         }
     }
 
-    public void updateUserLocation(double latitude, double longitude, String uid) {
+    public void updateUserLocation(double latitude, double longitude) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        DocumentReference documentRef = firestore.collection("users").document(uid);
+       DocumentReference documentRef = firestore.collection("users").document(uid1);
 
         Map<String, Object> updateData = new HashMap<>();
         updateData.put("latitude", "" + latitude);
