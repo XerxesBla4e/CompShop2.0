@@ -1,6 +1,7 @@
 package com.example.compshop.Admin;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -90,7 +91,17 @@ public class AdminMain extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+        if (firebaseUser != null) {
+            uid1 = firebaseUser.getUid();
+            shimmerFrameLayout.startShimmer();
+            fetchOrders();
+            shimmerFrameLayout.hideShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+        } else {
+            startActivity(new Intent(AdminMain.this, LoginActivity.class));
+            finish();
+        }
+        /*firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -105,7 +116,7 @@ public class AdminMain extends AppCompatActivity {
                     finish();
                 }
             }
-        });
+        });*/
 
         initBottomNavView();
 
@@ -170,6 +181,10 @@ public class AdminMain extends AppCompatActivity {
                     x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(x6);
                     return true;
+                } else if (item.getItemId() == R.id.nav_viewproducts) {
+                    Intent x5 = new Intent(getApplicationContext(), ViewMyItems.class);
+                    x5.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(x5);
                 }
                 return false;
             }
@@ -201,6 +216,7 @@ public class AdminMain extends AppCompatActivity {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void fetchOrders() {
         // Assuming the "users" collection contains a document with the current user's ID as the document ID
         DocumentReference currentUserRef = firestore.collection("users").document(uid1);
@@ -225,6 +241,7 @@ public class AdminMain extends AppCompatActivity {
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private void initViews(ActivityAdminMainBinding activityAdminMainBinding) {
         bottomNavigationView = activityAdminMainBinding.bottomNavgation;
         floatingActionButton = activityAdminMainBinding.fab;
@@ -244,6 +261,7 @@ public class AdminMain extends AppCompatActivity {
         // Delegate the permission result to LocationManagerHelper
         locationManagerHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
     private void showConfirmationDialog(RecyclerView.ViewHolder viewHolder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AdminMain.this);
         builder.setTitle("Confirm Delete")
@@ -261,6 +279,7 @@ public class AdminMain extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     private void deleteOrderItem(RecyclerView.ViewHolder viewHolder) {
         int position = viewHolder.getAdapterPosition();
         if (position != RecyclerView.NO_POSITION) {

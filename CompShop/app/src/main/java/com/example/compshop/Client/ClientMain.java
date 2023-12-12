@@ -118,7 +118,15 @@ public class ClientMain extends AppCompatActivity {
         } catch (SQLDataException e) {
             e.printStackTrace();
         }
-        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+
+        if (firebaseUser != null) {
+            uid1 = firebaseUser.getUid();
+            fetchItems();
+        } else {
+            startActivity(new Intent(ClientMain.this, LoginActivity.class));
+            finish();
+        }
+      /*  firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -131,7 +139,7 @@ public class ClientMain extends AppCompatActivity {
                 }
             }
         });
-
+*/
         // Initialize the LocationManagerHelper
         locationManagerHelper = new LocationManagerHelper(this, null, null);
 
@@ -140,10 +148,8 @@ public class ClientMain extends AppCompatActivity {
 
         initBottomNavView();
 
-        itemAdapter = new ItemAdapter(getApplicationContext());
-        recyclerView.setAdapter(itemAdapter);
-
         fetchCategory();
+        fetchItems();
 
         // Add a scroll listener to load more items when needed
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -219,105 +225,100 @@ public class ClientMain extends AppCompatActivity {
     }
 
     private void callpopupdialog(Item item) {
-        runOnUiThread(new Runnable() {
+        DialogPlus dialogPlus = DialogPlus.newDialog(getApplicationContext())
+                .setContentHolder(new ViewHolder(R.layout.popupmenu))
+                .setExpanded(true, 1100)
+                .setGravity(Gravity.BOTTOM) // Set the dialog to appear from the bottom
+                .create();
+        View dialogView = dialogPlus.getHolderView();
+
+        ImageView imageView1 = dialogView.findViewById(R.id.imageView0);
+        addQty = dialogView.findViewById(R.id.imageButtonAdd);
+        reduceQty = dialogView.findViewById(R.id.imageButtonRemove);
+        name = dialogView.findViewById(R.id.foodNameTextView);
+        name.setText(item.getName());
+        description = dialogView.findViewById(R.id.descriptionTextView);
+        description.setText(item.getDescription());
+        quantitytextview = dialogView.findViewById(R.id.textViewQuantity);
+        quantitytextview.setText(String.valueOf(item.getQuantity()));
+        addToCartBtn = dialogView.findViewById(R.id.button2);
+        price2 = dialogView.findViewById(R.id.amountTextView);
+        price2.setText(item.getPrice());
+        newprice2 = dialogView.findViewById(R.id.discountAmountTextView);
+        totalamount = dialogView.findViewById(R.id.totalAmountTextView);
+        totalamount.setText(String.valueOf(item.getTotal()));
+
+        computePriceDiscount(item, price2, newprice2);
+
+        addQty.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                DialogPlus dialogPlus = DialogPlus.newDialog(getApplicationContext())
-                        .setContentHolder(new ViewHolder(R.layout.popupmenu))
-                        .setExpanded(true, 1100)
-                        .setGravity(Gravity.BOTTOM) // Set the dialog to appear from the bottom
-                        .create();
-                View dialogView = dialogPlus.getHolderView();
+            public void onClick(View view) {
+                int quantity = item.getQuantity();
+                quantity++; // Increment the quantity
 
-                ImageView imageView1 = dialogView.findViewById(R.id.imageView0);
-                addQty = dialogView.findViewById(R.id.imageButtonAdd);
-                reduceQty = dialogView.findViewById(R.id.imageButtonRemove);
-                name = dialogView.findViewById(R.id.foodNameTextView);
-                name.setText(item.getName());
-                description = dialogView.findViewById(R.id.descriptionTextView);
-                description.setText(item.getDescription());
-                quantitytextview = dialogView.findViewById(R.id.textViewQuantity);
+                // Update the quantity and total in the food object
+                item.setQuantity(quantity);
+
                 quantitytextview.setText(String.valueOf(item.getQuantity()));
-                addToCartBtn = dialogView.findViewById(R.id.button2);
-                price2 = dialogView.findViewById(R.id.amountTextView);
-                price2.setText(item.getPrice());
-                newprice2 = dialogView.findViewById(R.id.discountAmountTextView);
-                totalamount = dialogView.findViewById(R.id.totalAmountTextView);
                 totalamount.setText(String.valueOf(item.getTotal()));
-
-                computePriceDiscount(item, price2, newprice2);
-
-                addQty.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int quantity = item.getQuantity();
-                        quantity++; // Increment the quantity
-
-                        // Update the quantity and total in the food object
-                        item.setQuantity(quantity);
-
-                        quantitytextview.setText(String.valueOf(item.getQuantity()));
-                        totalamount.setText(String.valueOf(item.getTotal()));
-                    }
-                });
-
-                reduceQty.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int quantity = item.getQuantity();
-                        if (quantity > 1) {
-                            quantity--; // Decrement the quantity
-
-                            // Update the quantity and total in the food object
-                            item.setQuantity(quantity);
-                            quantitytextview.setText(String.valueOf(item.getQuantity()));
-                            totalamount.setText(String.valueOf(item.getTotal()));
-                        }
-                    }
-                });
-
-                addToCartBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Assuming item.getItemId() is a unique identifier for each item
-                        long itemId = Long.parseLong(item.getItem_Id());
-
-                        // Check if the item with the same ID already exists in the cart
-                        if (databasemanager.isItemInCart(itemId)) {
-                            Toast.makeText(view.getContext(), "Item is already in the cart", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Item is not in the cart, proceed to add it
-                            Item item2 = new Item(item.getName(), item.getCategory(), item.getDescription(), item.getPrice(),
-                                    item.getItem_Id(), item.getTimestamp(), item.getUid(), item.getImage(), item.getQuantity(), item.getTotal());
-
-                            // Update the total based on the provided discount and discount description
-                            item2.updateTotal(item.getDiscount(), item.getDiscountdescription());
-
-                            int res = (int) databasemanager.addItem(item2);
-
-                            if (res > 0) {
-                                Toast.makeText(view.getContext(), "ADDED TO CART", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
-
-                String imagePath = item.getImage();
-                try {
-                    if (imagePath != null && !imagePath.isEmpty()) {
-                        Picasso.get().load(item.getImage()).into(imageView1);
-                    } else {
-                        imageView1.setImageResource(R.mipmap.ic_launcher);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    imageView1.setImageResource(R.mipmap.ic_launcher);
-                }
-                quantitytextview.setText(String.valueOf(item.getQuantity()));
-
-                dialogPlus.show();
             }
         });
+
+        reduceQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int quantity = item.getQuantity();
+                if (quantity > 1) {
+                    quantity--; // Decrement the quantity
+
+                    // Update the quantity and total in the food object
+                    item.setQuantity(quantity);
+                    quantitytextview.setText(String.valueOf(item.getQuantity()));
+                    totalamount.setText(String.valueOf(item.getTotal()));
+                }
+            }
+        });
+
+        addToCartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Assuming item.getItemId() is a unique identifier for each item
+                long itemId = Long.parseLong(item.getItem_Id());
+
+                // Check if the item with the same ID already exists in the cart
+                if (databasemanager.isItemInCart(itemId)) {
+                    Toast.makeText(view.getContext(), "Item is already in the cart", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Item is not in the cart, proceed to add it
+                    Item item2 = new Item(item.getName(), item.getCategory(), item.getDescription(), item.getPrice(),
+                            item.getItem_Id(), item.getTimestamp(), item.getUid(), item.getImage(), item.getQuantity(), item.getTotal());
+
+                    // Update the total based on the provided discount and discount description
+                    item2.updateTotal(item.getDiscount(), item.getDiscountdescription());
+
+                    int res = (int) databasemanager.addItem(item2);
+
+                    if (res > 0) {
+                        Toast.makeText(view.getContext(), "ADDED TO CART", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+        String imagePath = item.getImage();
+        try {
+            if (imagePath != null && !imagePath.isEmpty()) {
+                Picasso.get().load(item.getImage()).into(imageView1);
+            } else {
+                imageView1.setImageResource(R.mipmap.ic_launcher);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            imageView1.setImageResource(R.mipmap.ic_launcher);
+        }
+        quantitytextview.setText(String.valueOf(item.getQuantity()));
+
+        dialogPlus.show();
     }
 
     private void computePriceDiscount(Item item, TextView price2, TextView newprice2) {
@@ -456,29 +457,21 @@ public class ClientMain extends AppCompatActivity {
         bottomNavigationView = homeBinding.bottomNavgation;
         toolbar = homeBinding.toolbar;
         viewall = homeBinding.textView59;
+        itemAdapter = new ItemAdapter(getApplicationContext());
+        recyclerView.setAdapter(itemAdapter);
     }
 
     private void updateUIAndStopShimmer() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // UI-related code here
-                shimmerLayout.stopShimmer();
-                shimmerLayout.setVisibility(View.GONE);
-            }
-        });
+        // UI-related code here
+        shimmerLayout.stopShimmer();
+        shimmerLayout.setVisibility(View.GONE);
         loading = true;
     }
 
     private void updateUIAndStopShimmer1() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // UI-related code here
-                shimmerLayout1.stopShimmer();
-                shimmerLayout1.setVisibility(View.GONE);
-            }
-        });
+        shimmerLayout1.stopShimmer();
+        shimmerLayout1.setVisibility(View.GONE);
+
     }
 
     private void fetchItems() {
@@ -501,15 +494,8 @@ public class ClientMain extends AppCompatActivity {
                             }
 
                             // Update the adapter's item list and notify the change
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Update the adapter's item list and notify the change
-                                    itemAdapter.updateItemList(itemList);
-                                    itemAdapter.notifyDataSetChanged();
-                                }
-                            });
-
+                            itemAdapter.updateItemList(itemList);
+                            itemAdapter.notifyDataSetChanged();
 
                             // Common code for updating UI and stopping shimmer effect
                             updateUIAndStopShimmer();
@@ -529,10 +515,6 @@ public class ClientMain extends AppCompatActivity {
     }
 
     private void fetchNextPage() {
-        if (itemList.isEmpty()) {
-            return;
-        }
-
         Query nextQuery = db.collection("users")
                 .whereEqualTo("accounttype", "Admin")
                 .limit(10)
@@ -540,11 +522,15 @@ public class ClientMain extends AppCompatActivity {
 
         nextQuery.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                // Iterate through the admin users
                 for (QueryDocumentSnapshot userDocument : task.getResult()) {
+                    // Access the "Products" subcollection for each admin user
                     CollectionReference productsCollection = userDocument.getReference().collection("Products");
 
+                    // Query products within the "Products" subcollection
                     Query productsQuery = productsCollection.limit(10);
 
+                    // Fetch products within the subcollection
                     productsQuery.get().addOnCompleteListener(productsTask -> {
                         if (productsTask.isSuccessful()) {
                             // Exclude items already in the list
@@ -555,18 +541,10 @@ public class ClientMain extends AppCompatActivity {
                                     newItems.add(item);
                                 }
                             }
-
-                            itemList.addAll(newItems);
-
                             // Update the adapter's item list and notify the change
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Update the adapter's item list and notify the change
-                                    itemAdapter.updateItemList(itemList);
-                                    itemAdapter.notifyDataSetChanged();
-                                }
-                            });
+                            itemList.addAll(newItems);
+                            itemAdapter.updateItemList(itemList);
+                            itemAdapter.notifyDataSetChanged();
 
                             // Common code for updating UI and stopping shimmer effect
                             updateUIAndStopShimmer();
@@ -578,11 +556,12 @@ public class ClientMain extends AppCompatActivity {
                     });
                 }
             } else {
-                Log.d("TAG", "Error getting documents: ", task.getException());
+                Log.d("TAG", "Error getting admin user documents: ", task.getException());
                 // Common code for updating UI and stopping shimmer effect
                 updateUIAndStopShimmer();
             }
         });
+
     }
 
     private void fetchCategory() {
