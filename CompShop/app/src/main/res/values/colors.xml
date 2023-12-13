@@ -21,4 +21,8 @@
     <color name="defaultHeartColor">#808080</color>
     <!-- Add background_material_light color -->
     <color name="background_material_light">#ffffff</color>
+    <color name="searchTextColorLight">#000000</color>
+    <color name="searchTextColorDark">#000000</color>
+
+    <color name="shimmer_color">#bfbdbd</color>
 </resources>

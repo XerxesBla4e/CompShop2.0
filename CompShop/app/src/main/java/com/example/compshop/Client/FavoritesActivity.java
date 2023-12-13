@@ -1,6 +1,7 @@
 package com.example.compshop.Client;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.compshop.Adapters.FavAdapter;
 import com.example.compshop.Cart.DatabaseHelper;
 import com.example.compshop.Cart.DatabaseManager;
+import com.example.compshop.Interface.ActionType;
+import com.example.compshop.Interface.OnItemClickListener;
 import com.example.compshop.Models.Item;
 import com.example.compshop.databinding.ActivityFavoritesBinding;
 
@@ -21,6 +24,8 @@ import java.util.List;
 public class FavoritesActivity extends AppCompatActivity {
     private ActivityFavoritesBinding activityFavoritesBinding;
     private FavAdapter favAdapter;
+
+    private DatabaseManager databasemanager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,8 +39,31 @@ public class FavoritesActivity extends AppCompatActivity {
         activityFavoritesBinding.recyclerViewFavorites.setLayoutManager(new LinearLayoutManager(this));
         activityFavoritesBinding.recyclerViewFavorites.setAdapter(favAdapter);
 
+        databasemanager = new DatabaseManager(getApplicationContext());
+        try {
+            databasemanager.open();
+        } catch (SQLDataException e) {
+            e.printStackTrace();
+        }
+
         // Retrieve favorite items from the database and populate the RecyclerView
         retrieveFavoriteItems();
+
+        favAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Item item, int position, ActionType actionType) {
+                switch (actionType) {
+
+                    case ADD_TO_FAVORITES:
+                        databasemanager.removeFromFavorites(Long.parseLong(item.getItem_Id()));
+                        break;
+                    default:
+
+                }
+            }
+
+        });
+
     }
 
     @SuppressLint("Range")
@@ -84,5 +112,11 @@ public class FavoritesActivity extends AppCompatActivity {
         favAdapter.updateItemList(favoriteItemList);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(
+                new Intent(getApplicationContext(), ClientMain.class)
+        );
+    }
 }

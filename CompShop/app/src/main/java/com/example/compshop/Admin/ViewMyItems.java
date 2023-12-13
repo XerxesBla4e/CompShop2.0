@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewMyItems extends AppCompatActivity {
-    ActivityViewMyItemsBinding activityViewMyItemsBinding; // Updated import
+    ActivityViewMyItemsBinding activityViewMyItemsBinding;
     RecyclerView recyclerView;
-    ViewItemAdapter viewItemAdapter; // Updated import
-    List<Item> itemList; // Updated type
+    ViewItemAdapter viewItemAdapter;
+    List<Item> itemList;
     FirebaseFirestore firestore;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;

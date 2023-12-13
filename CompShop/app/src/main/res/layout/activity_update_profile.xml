@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -96,52 +97,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
-                android:textColor="#00000B" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:hint="Password"
-            app:boxStrokeColor="#FFFFFF"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="password_toggle"
-            app:hintTextColor="#fff0e3"
-            app:startIconTint="#00000B">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textColor="#00000B" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password_layout1"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:hint="Re Enter Password"
-            app:boxStrokeColor="#FFFFFF"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="password_toggle"
-            app:hintTextColor="#fff0e3"
-            app:startIconTint="#00000B">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password_edit1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
                 android:textColor="#00000B" />
         </com.google.android.material.textfield.TextInputLayout>
 

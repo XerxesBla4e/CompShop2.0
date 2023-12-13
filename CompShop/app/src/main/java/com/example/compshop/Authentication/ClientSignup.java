@@ -61,7 +61,7 @@ public class ClientSignup extends AppCompatActivity {
     public static final int PERMISSION_REQUEST_CODE = 444;
     String date, name, email, phonenumber, location, password, repass, gender;
     String district, city, state, country, address;
-    TextView adminSignup,login;
+    TextView adminSignup, login;
     Spinner spinner;
     Double latitude, longitude;
 
@@ -74,7 +74,7 @@ public class ClientSignup extends AppCompatActivity {
     LocationRequest locationRequest;
     LocationCallback locationCallback;
     LocationManager locationManager;
-   // EditText bodedittext;
+    // EditText bodedittext;
     public LocationListener locationListener;
     private static int UPDATE_INTERVAL = 5000;
     private static int FASTEST_INTERVAL = 3000;
@@ -159,12 +159,12 @@ public class ClientSignup extends AppCompatActivity {
             }
         });
 
-    /*    pickLocation.setOnClickListener(new View.OnClickListener() {
+        pickLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //displayLocation();
+                displayLocation();
             }
-        });*/
+        });
 
         adminSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,6 +243,7 @@ public class ClientSignup extends AppCompatActivity {
                     }
                 });
     }
+
     private void stopLocationUpdates() {
         //fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
@@ -318,7 +319,7 @@ public class ClientSignup extends AppCompatActivity {
         }*/
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getApplicationContext(),"Password field can't be empty",Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "Password field can't be empty", Toast.LENGTH_SHORT);
             signupBinding.passwordEdit.requestFocus();
             return false;
         } /*else if (!password.matches(passwordRegex)) {

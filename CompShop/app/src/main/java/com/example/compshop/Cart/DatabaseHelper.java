@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Information
     private static final String DB_NAME = "my_cart_database";
-    private static final int DB_VERSION = 5;  // Increment the version for the database upgrade
+    private static final int DB_VERSION = 6;  // Increment the version for the database upgrade
     // Table Names
     public static final String TABLE_NAME = "my_cart_items";
     public static final String TABLE_NAME_FAVORITES = "favorite_items";  // New table for favorites

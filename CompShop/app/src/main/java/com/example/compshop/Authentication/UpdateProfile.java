@@ -99,6 +99,12 @@ public class UpdateProfile extends AppCompatActivity {
 
         initViews(activityUpdateProfileBinding);
 
+        pickLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayLocation();
+            }
+        });
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.gender_array,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -213,10 +219,6 @@ public class UpdateProfile extends AppCompatActivity {
         linearLayout = activityUpdateProfileBinding.updateproflinlayout;
         // studentSignup = activityUpdateProfileBinding.studentsignup;
         pickLocation = activityUpdateProfileBinding.btnPickLocation;
-
-        pickLocation.setOnClickListener(view -> {
-            displayLocation();
-        });
     }
 
     private boolean validateFields() {

@@ -86,13 +86,7 @@ public class FavAdapter extends ListAdapter<Item, FavAdapter.FavViewHolder> {
         }
 
         public void bind(Item item) {
-            if (item.isFavorite()) {
-                // Item is a favorite, set red color
-                binding.imageButton3.setColorFilter(ContextCompat.getColor(context, R.color.colorRed));
-            } else {
-                // Item is not a favorite, set default color
-                binding.imageButton3.setColorFilter(ContextCompat.getColor(context, R.color.defaultHeartColor));
-            }
+            binding.imageButton3.setColorFilter(ContextCompat.getColor(context, R.color.colorRed));
 
             binding.itemName.setText(item.getName());
             binding.itemPrice.setText(String.format("Price: Shs %s", item.getPrice()));

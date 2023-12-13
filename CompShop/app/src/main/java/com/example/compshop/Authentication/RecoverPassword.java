@@ -3,12 +3,14 @@ package com.example.compshop.Authentication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.compshop.Client.ClientMain;
 import com.example.compshop.R;
 import com.example.compshop.databinding.ActivityRecoverPasswordBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -72,5 +74,13 @@ public class RecoverPassword extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(
+                new Intent(getApplicationContext(), LoginActivity.class)
+        );
     }
 }

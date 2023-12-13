@@ -136,13 +136,12 @@ public class AdminSignup extends AppCompatActivity {
                 startActivity(x);
             }
         });
-
-    /*    pickLocation.setOnClickListener(new View.OnClickListener() {
+        pickLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //displayLocation();
+                displayLocation();
             }
-        });*/
+        });
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -342,12 +341,7 @@ public class AdminSignup extends AppCompatActivity {
             adminSignupBinding.phoneEdit.setError("Phone number field can't be empty");
             adminSignupBinding.phoneEdit.requestFocus();
             return false;
-        }/* else if (!phonenumber.matches(phoneRegex)) {
-            activitySignupBinding.phoneEdit.setError("Invalid phone number format");
-            activitySignupBinding.phoneEdit.requestFocus();
-            return false;
-        }*/
-
+        }
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(), "Password field can't be empty", Toast.LENGTH_SHORT).show();
             adminSignupBinding.passwordEdit.requestFocus();

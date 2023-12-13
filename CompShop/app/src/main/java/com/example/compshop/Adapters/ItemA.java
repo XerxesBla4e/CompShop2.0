@@ -63,7 +63,7 @@ public class ItemA extends ListAdapter<Item, ItemA.ItemViewHolder> {
     }
 
     public Item getItem(int position) {
-        return getItem(position);
+        return super.getItem(position);
     }
 
     public void clearCart() {

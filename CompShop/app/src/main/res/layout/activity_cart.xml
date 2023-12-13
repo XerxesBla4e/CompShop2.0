@@ -31,19 +31,19 @@
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/textView17">
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmerLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerview11"
+        <!--    <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerLayout3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/my_cart_row" />
+                android:layout_height="wrap_content">
+    -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/my_cart_row" />
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
+        <!--    </com.facebook.shimmer.ShimmerFrameLayout>
+    -->
     </androidx.cardview.widget.CardView>
 
     <ImageView

@@ -16,7 +16,7 @@ public class Item implements Serializable {
     private String discount;
     private String discountdescription;
     private String image;
-    private int quantity;
+    private int quantity = 1;
     private int total;
 
     private boolean isFavorite;
@@ -31,7 +31,7 @@ public class Item implements Serializable {
         this.timestamp = timestamp;
         this.Uid = uid;
         this.image = image;
-        this.quantity = 1;
+        //this.quantity = 1;
         this.total = recalculateTotal(); // Calculate total based on initial quantity
         this.isFavorite = false;
     }
@@ -152,7 +152,7 @@ public class Item implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        recalculateTotal(); // Recalculate total when quantity changes
+        this.total = recalculateTotal(); // Recalculate total when quantity changes
     }
 
     public void setTotal(int total) {

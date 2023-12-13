@@ -50,11 +50,11 @@
 
                     <!-- RatingBar -->
                     <ImageButton
-                        android:id="@+id/imageButton"
+                        android:id="@+id/favoriteButton1"
                         android:layout_width="92dp"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@color/white"
-                        android:src="@drawable/unfilled" />
+                        android:background="@drawable/selector_favorite_button"
+                        android:src="@drawable/unfilled"/>
 
                     <!-- Amount with Discount Amount TextView on the right -->
                     <LinearLayout

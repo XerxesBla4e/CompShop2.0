@@ -73,7 +73,7 @@ public class CartActivity extends AppCompatActivity {
 
     DatabaseManager databaseManager;
     List<Item> items;
-    ShimmerFrameLayout shimmerLayout;
+    // ShimmerFrameLayout shimmerLayout;
 
     FirebaseUser user;
     String uid1;
@@ -103,15 +103,15 @@ public class CartActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        shimmerLayout = activityCartBinding.shimmerLayout3;
-        shimmerLayout.startShimmer();
+        //shimmerLayout = activityCartBinding.shimmerLayout3;
+        //shimmerLayout.startShimmer();
 
         getAllItems();
 
-        shimmerLayout.hideShimmer();
-        shimmerLayout.setVisibility(View.GONE);
+        // shimmerLayout.hideShimmer();
+        //shimmerLayout.setVisibility(View.GONE);
 
-        computeTotalPrice();
+     //   computeTotalPrice();
 
         adapter.setOnQuantityChangeListener(new OnQuantityChangeListener() {
             @Override
@@ -126,6 +126,8 @@ public class CartActivity extends AppCompatActivity {
 
                 // Notify the adapter of the data change for the specific item
                 adapter.notifyItemChanged(position);
+
+                computeTotalPrice();
             }
 
             @Override
@@ -142,6 +144,8 @@ public class CartActivity extends AppCompatActivity {
 
                     // Notify the adapter of the data change for the specific item
                     adapter.notifyItemChanged(position);
+
+                    computeTotalPrice();
                 }
             }
         });
@@ -150,7 +154,6 @@ public class CartActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // String sphone = "0760139422";
                 double totalCost = computeTotalPrice();
                 if ((totalCost <= 0)) {
                     Toast.makeText(getApplicationContext(), "No items to charge", Toast.LENGTH_SHORT).show();
@@ -172,6 +175,7 @@ public class CartActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (direction == ItemTouchHelper.RIGHT) {
                     databaseManager.deleteItem(adapter.getItem(viewHolder.getAdapterPosition()).getId());
+                    computeTotalPrice();
                     Toast.makeText(CartActivity.this, "Cart Item deleted", Toast.LENGTH_SHORT).show();
                 }
             }

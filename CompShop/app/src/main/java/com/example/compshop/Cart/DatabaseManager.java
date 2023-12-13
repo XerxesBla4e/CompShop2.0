@@ -75,9 +75,23 @@ public class DatabaseManager {
         db.update(DatabaseHelper.TABLE_NAME, contentValues, DatabaseHelper.COLUMN_ID + "=?", new String[]{String.valueOf(item.getId())});
     }
 
+    public boolean checkAlreadyExists(String itemname) {
+        String[] item = new String[]{DatabaseHelper.COLUMN_ITEMNAME};
+        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME, item, DatabaseHelper.COLUMN_ITEMNAME + "='" + itemname + "'", null, null, null, null);
+        if (cursor.getCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // Inside DatabaseManager class
-    public boolean isItemInCart(long itemId) {
-        Cursor cursor = db.query(DatabaseHelper.TABLE_NAME, new String[]{"_id"}, "item_id = ?", new String[]{String.valueOf(itemId)},
+    public boolean isItemInCart(Item item) {
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_NAME,
+                new String[]{DatabaseHelper.COLUMN_ITEMID},
+                DatabaseHelper.COLUMN_ITEMID + "=?",
+                new String[]{String.valueOf(item.getItem_Id())},
                 null,
                 null,
                 null
