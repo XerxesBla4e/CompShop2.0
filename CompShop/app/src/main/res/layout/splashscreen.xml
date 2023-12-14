@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/top_background"
+   android:background="@color/blue"
     tools:layout_editor_absoluteX="16dp"
     tools:layout_editor_absoluteY="0dp">
 
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Designed By Xerxes"
+        android:text="Designed By XerJoel"
         android:textColor="@color/white"
         android:textSize="17sp"
         android:textStyle="bold|italic"

@@ -23,6 +23,7 @@ import com.example.compshop.Models.Order;
 import com.example.compshop.Models.UserDets;
 import com.example.compshop.R;
 import com.example.compshop.Utils.FCMSend;
+import com.example.compshop.Utils.LocationUtils;
 import com.example.compshop.databinding.ActivityClientAdminBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -241,7 +242,36 @@ public class ClientDetails extends AppCompatActivity {
         if (orderBy != null && !orderBy.isEmpty()) {
             CollectionReference usersCollectionRef = firestore.collection("users");
 
-            usersCollectionRef.whereEqualTo("uid", orderBy).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            usersCollectionRef.whereEqualTo("uid", orderBy).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+
+                            String name = documentSnapshot.getString("name");
+                            studentname.setText("Hello " + name);
+                            double latitude = Double.valueOf(documentSnapshot.getString("latitude"));
+                            double longitude = Double.valueOf(documentSnapshot.getString("longitude"));
+                            notstudenttoken = documentSnapshot.getString("token");
+
+                            String address = LocationUtils.getAddressFromLatLng(getApplicationContext(), latitude, longitude);
+                            Log.d("User Address", "Address: " + address);
+
+                            location1.setText(address);
+                            notstudenttoken = documentSnapshot.getString("token");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle the failure scenario if necessary
+                    });
+        }
+    }
+
+    /*
+    private void retrievePersonalDets(String orderBy) {
+        if (orderBy != null && !orderBy.isEmpty()) {
+            CollectionReference usersCollectionRef = firestore.collection("users");
+
+            usersCollectionRef.whereEqualTo("uid", orderBy).get()
+                   .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
@@ -274,8 +304,7 @@ public class ClientDetails extends AppCompatActivity {
             //   Toast.makeText(getApplicationContext(), "Error: Invalid OrderBy value", Toast.LENGTH_SHORT).show();
             // Log an error message for debugging
             Log.e("FirestoreError", "Invalid OrderBy value: " + OrderBy);
-        }
-    }
+        }       }*/
 
 
     @Override

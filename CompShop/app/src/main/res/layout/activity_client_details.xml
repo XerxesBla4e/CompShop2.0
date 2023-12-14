@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/top_background"
     android:orientation="vertical"
     tools:context=".Client.ClientDetailsActivity"
     >
@@ -25,7 +24,7 @@
                 android:id="@+id/patientname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Client Name"
+                android:text="Hello Shopper"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -62,27 +61,6 @@
                     android:text="Total Price"
                     android:textSize="14sp"
                     android:textStyle="bold" />
-
-            </LinearLayout>
-            <!-- Update and Delete SVGs -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editstatus"
-                    android:src="@drawable/edit1" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:id="@+id/locateclient"
-                    android:src="@drawable/ic_location" />
 
             </LinearLayout>
         </LinearLayout>

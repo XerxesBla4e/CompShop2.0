@@ -396,6 +396,7 @@ public class CartActivity extends AppCompatActivity {
 
                             if (user != null) {
                                 notadmintoken = user.getToken();
+                              //  Toast.makeText(CartActivity.this,"Token: "+notadmintoken,Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Error: Unable to retrieve user data", Toast.LENGTH_SHORT).show();
                             }

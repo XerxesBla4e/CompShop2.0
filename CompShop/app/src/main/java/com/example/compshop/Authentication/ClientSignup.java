@@ -429,7 +429,7 @@ public class ClientSignup extends AppCompatActivity {
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
             address = addressList.get(0).getAddressLine(0);
 
-            //  activitySignupBinding.locationEdit.setText(address);
+            signupBinding.locationEdit.setText(address);
             city = addressList.get(0).getLocality(); // city
             state = addressList.get(0).getAdminArea(); // region
             country = addressList.get(0).getCountryName(); // country

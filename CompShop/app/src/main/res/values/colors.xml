@@ -16,13 +16,14 @@
     <color name="orange">#f7931e</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="lightGreen">#18EC55</color>
+    <color name="originalviewalltextcolor">#2196F3</color>
     <!-- res/values/colors.xml -->
     <color name="colorRed">#FF0000</color>
     <color name="defaultHeartColor">#808080</color>
     <!-- Add background_material_light color -->
     <color name="background_material_light">#ffffff</color>
     <color name="searchTextColorLight">#000000</color>
-    <color name="searchTextColorDark">#000000</color>
+    <color name="searchTextColorDark">#ffffff</color>
 
     <color name="shimmer_color">#bfbdbd</color>
 </resources>

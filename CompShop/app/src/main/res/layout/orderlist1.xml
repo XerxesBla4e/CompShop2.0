@@ -59,7 +59,7 @@
                         android:id="@+id/textViewPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price: $10"
+                        android:text="Price: Shs10"
                         android:textSize="14sp" />
 
                     <TextView

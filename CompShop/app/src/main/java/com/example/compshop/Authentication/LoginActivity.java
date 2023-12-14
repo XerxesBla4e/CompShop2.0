@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.compshop.Admin.AdminMain;
 import com.example.compshop.Client.ClientMain;
 
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     CardView cardView, cardView2, cardView3, cardView4;
     TextView textView, textView2;
     ConstraintLayout registerLayout, majorlayout;
-  //  ProgressBar progressBar;
+    //  ProgressBar progressBar;
     private static final int DURATION = 1000;
     private FirebaseAuth mAuth;
     private static final String TAG = "LOGIN";
@@ -58,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     String email, password;
     AppCompatButton btnlogin;
     TextView signup, forgotpass;
+    LottieAnimationView lottieAnimationView;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -72,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
         bottom_down = AnimationUtils.loadAnimation(this, R.anim.bottom_down);
 
         initViews(activityLoginBinding);
+
+        lottieAnimationView.playAnimation();
 
         //Create handler for other layouts
         new Handler().postDelayed(new Runnable() {
@@ -133,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                       //         progressBar.setVisibility(View.GONE);
+                                //         progressBar.setVisibility(View.GONE);
                                 Toast.makeText(getApplicationContext(), "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -156,19 +160,6 @@ public class LoginActivity extends AppCompatActivity {
 
         majorlayout = activityLoginBinding.majorlayout;
 
-        // progressBar = new ProgressBar(getApplicationContext(), null, android.R.attr.progressBarStyleLarge);
-        //  progressBar.setId(View.generateViewId());
-        //add ProgressBar to constraintlayout
-        //majorlayout.addView(progressBar);
-        //Create ConstraitSet and set the constraints programmatically
-       /* ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(majorlayout);
-        //set constraints for the ProgressBar
-        constraintSet.connect(progressBar.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
-        constraintSet.connect(progressBar.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
-        constraintSet.connect(progressBar.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
-        //apply the constraints to the constrait layout
-        constraintSet.applyTo(majorlayout);*/
 
         email1 = activityLoginBinding.edittextemail;
         password1 = activityLoginBinding.edittextpass;
@@ -176,6 +167,8 @@ public class LoginActivity extends AppCompatActivity {
         btnlogin = activityLoginBinding.btnlogin;
         signup = activityLoginBinding.textView2;
         forgotpass = activityLoginBinding.forgotpass;
+
+        lottieAnimationView = activityLoginBinding.lottieLayerNam;
     }
 
     private boolean validateFields() {
@@ -217,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                      //  progressBar.setVisibility(View.GONE);
+                        //  progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -230,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-         //       progressBar.setVisibility(View.GONE);
+                //       progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     //since we are retrieving a snapshot of a single document
                     DocumentSnapshot snapshot = task.getResult();

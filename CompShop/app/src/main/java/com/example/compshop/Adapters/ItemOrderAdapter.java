@@ -46,7 +46,7 @@ public class ItemOrderAdapter extends RecyclerView.Adapter<ItemOrderAdapter.Item
 
         holder.textViewName.setText(itemModel.getItemName());
         holder.textViewDescription.setText(itemModel.getItemDescription());
-        holder.textViewPrice.setText(String.format("Price: $%s", itemModel.getItemTotal()));
+        holder.textViewPrice.setText(String.format("Price: Shs:%s", itemModel.getItemTotal()));
         holder.textViewQuantity.setText(String.format("Quantity: %d", itemModel.getItemQuantity()));
 
         String imagePath = itemModel.getItemImage();

@@ -5,11 +5,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -191,7 +193,7 @@ public class ClientMain extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String searchQuery = query.trim();
-                //shimmerLayout.startShimmer();
+                shimmerFrameLayout.startShimmer();
                 filterItems(searchQuery);
                 return true;
             }
@@ -199,7 +201,7 @@ public class ClientMain extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 String searchQuery = newText.trim();
-                // shimmerLayout.startShimmer();
+                shimmerFrameLayout.startShimmer();
                 filterItems(searchQuery);
                 return true;
             }
@@ -208,9 +210,19 @@ public class ClientMain extends AppCompatActivity {
         viewall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                viewall.setTextColor(Color.RED);
+
                 fetchNextPage();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewall.setTextColor(getResources().getColor(R.color.originalviewalltextcolor));
+                    }
+                }, 1000);
             }
         });
+
     }
 
     private void callpopupdialog(Item item) {
@@ -440,6 +452,8 @@ public class ClientMain extends AppCompatActivity {
         // Update RecyclerView adapter with filtered list
         itemAdapter.updateItemList(filteredList);
         itemAdapter.notifyDataSetChanged();
+
+        updateUIAndStopShimmer();
 
         //shimmerLayout.stopShimmer();
         //shimmerLayout.setVisibility(View.GONE);

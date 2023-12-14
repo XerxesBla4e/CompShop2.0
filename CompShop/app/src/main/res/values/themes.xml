@@ -30,4 +30,8 @@
         <!-- Add other attributes as needed -->
     </style>
 
+    <style name="SearchViewStyle.Dark" parent="SearchViewStyle">
+        <!-- Set the text color for dark mode -->
+        <item name="android:textColor">@color/searchTextColorDark</item>
+    </style>
 </resources>

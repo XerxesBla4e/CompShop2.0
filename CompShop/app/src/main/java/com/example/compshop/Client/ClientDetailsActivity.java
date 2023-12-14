@@ -18,6 +18,8 @@ import com.example.compshop.Models.Item;
 import com.example.compshop.Models.ItemOrder;
 import com.example.compshop.Models.Order;
 import com.example.compshop.Models.UserDets;
+import com.example.compshop.R;
+import com.example.compshop.Utils.LocationUtils;
 import com.example.compshop.databinding.ActivityClientDetailsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +38,6 @@ public class ClientDetailsActivity extends AppCompatActivity {
     ActivityClientDetailsBinding activityClientDetailsBinding;
     RecyclerView recyclerView;
     TextView studentname, location1, status1, totalprice;
-    ImageView edit, locate3;
     String notpatienttoken;
     Order ordersModel;
     List<ItemOrder> orderList;
@@ -46,7 +47,7 @@ public class ClientDetailsActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     String OrderID, OrderBy, OrderTo;
     FirebaseUser firebaseUser;
-    String id;
+    String id, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +62,9 @@ public class ClientDetailsActivity extends AppCompatActivity {
         firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
             id = firebaseUser.getUid();
+            retrieveUserDetails(id);
         }
-
-        RetrievePersonalDets();
-
+        // RetrievePersonalDets();
         Intent intent = getIntent();
 
         if (intent.hasExtra("ordersModel")) {
@@ -73,7 +73,19 @@ public class ClientDetailsActivity extends AppCompatActivity {
             OrderID = ordersModel.getOrderID();
             OrderBy = ordersModel.getOrderBy();
             OrderTo = ordersModel.getOrderTo();
-            status1.setText(ordersModel.getOrderStatus());
+            String status3 = ordersModel.getOrderStatus();
+
+
+            if (status3.equals("In Progress")) {
+                status1.setText(ordersModel.getOrderStatus());
+                status1.setTextColor(getBaseContext().getResources().getColor(R.color.lightGreen));
+            } else if (status3.equals("Confirmed")) {
+                status1.setText(ordersModel.getOrderStatus());
+                status1.setTextColor(getBaseContext().getResources().getColor(R.color.teal_200));
+            } else if (status3.equals("Cancelled")) {
+                status1.setText(ordersModel.getOrderStatus());
+                status1.setTextColor(getBaseContext().getResources().getColor(R.color.colorRed));
+            }
         }
 
         CollectionReference itemOrdersRef = FirebaseFirestore.getInstance().collection("users")
@@ -101,7 +113,7 @@ public class ClientDetailsActivity extends AppCompatActivity {
                                 Log.e("ClientDetails1", "Error parsing item price: " + e.getMessage());
                             }
 
-                           orderList.add(itemOrder);
+                            orderList.add(itemOrder);
 
                         }
                         itemOrderAdapter.setItemModelList(orderList);
@@ -119,31 +131,29 @@ public class ClientDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void RetrievePersonalDets() {
-        if (OrderBy != null) {
-            DocumentReference userRef = firestore.collection("users").document(OrderBy);
+    private void retrieveUserDetails(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(userId);
 
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            UserDets user = document.toObject(UserDets.class);
+        userRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        name = documentSnapshot.getString("name");
+                        studentname.setText("Hello " + name);
+                        double latitude = Double.valueOf(documentSnapshot.getString("latitude"));
+                        double longitude = Double.valueOf(documentSnapshot.getString("longitude"));
 
-                            String location = user.getLocation();
-                            location1.setText(location);
-                            notpatienttoken = user.getToken();
 
-                        } else {
-                            Toast.makeText(getApplicationContext(), "You Don't Have Personal Info", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Exception exception = task.getException();
+                        String address = LocationUtils.getAddressFromLatLng(getApplicationContext(), latitude, longitude);
+                        Log.d("User Address", "Address: " + address);
+
+                        location1.setText(address);
+                        notpatienttoken = documentSnapshot.getString("token");
                     }
-                }
-            });
-        }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the failure scenario if necessary
+                });
     }
 
     private void initViews(ActivityClientDetailsBinding activityClientDetailsBinding) {
@@ -152,8 +162,6 @@ public class ClientDetailsActivity extends AppCompatActivity {
         location1 = activityClientDetailsBinding.patientlocation;
         status1 = activityClientDetailsBinding.orderStatus;
         totalprice = activityClientDetailsBinding.totalprice;
-        edit = activityClientDetailsBinding.editstatus;
-        locate3 = activityClientDetailsBinding.locateclient;
         orderList = new ArrayList<>();
         itemOrderAdapter = new ItemOrderAdapter(getApplicationContext(), orderList);
         recyclerView.setHasFixedSize(true);

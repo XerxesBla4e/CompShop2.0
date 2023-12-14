@@ -59,7 +59,7 @@
                 android:layout_height="match_parent"
                 android:padding="23dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_background"></ImageView>
+                android:src="@drawable/test"></ImageView>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -254,7 +254,8 @@
             app:layout_constraintStart_toEndOf="@+id/textView2"
             app:layout_constraintTop_toTopOf="parent"
             app:lottie_autoPlay="true"
-            app:lottie_fileName="arrow_right_anim.json"
+            android:id="@+id/lottie_layer_nam"
+            app:lottie_fileName="right_arrow.json"
             app:lottie_loop="true" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
