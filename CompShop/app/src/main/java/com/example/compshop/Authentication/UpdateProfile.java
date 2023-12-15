@@ -217,7 +217,6 @@ public class UpdateProfile extends AppCompatActivity {
         spinner = activityUpdateProfileBinding.spinnerGender;
         submit = activityUpdateProfileBinding.signupButton;
         linearLayout = activityUpdateProfileBinding.updateproflinlayout;
-        // studentSignup = activityUpdateProfileBinding.studentsignup;
         pickLocation = activityUpdateProfileBinding.btnPickLocation;
     }
 
@@ -351,7 +350,9 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
     private void stopLocationUpdates() {
-        // fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        if (locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
 
     @Override

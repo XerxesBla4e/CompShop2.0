@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
         initViews(activityLoginBinding);
 
-        lottieAnimationView.playAnimation();
+        lottieAnimationView.setAnimation("arrow_right_anim.json");
 
         //Create handler for other layouts
         new Handler().postDelayed(new Runnable() {

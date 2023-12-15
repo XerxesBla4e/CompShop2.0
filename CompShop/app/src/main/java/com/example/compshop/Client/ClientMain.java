@@ -528,57 +528,60 @@ public class ClientMain extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private void fetchNextPage() {
-        Query nextQuery = db.collection("users")
-                .whereEqualTo("accounttype", "Admin")
-                .orderBy("timestamp")
-                .limit(10)
-                .startAfter(itemList.get(itemList.size() - 1).getTimestamp());
+        // Check if itemList is not empty before using startAfter
+        if (!itemList.isEmpty()) {
+            Query nextQuery = db.collection("users")
+                    .whereEqualTo("accounttype", "Admin")
+                    .orderBy("timestamp")
+                    .limit(10)
+                    .startAfter(itemList.get(itemList.size() - 1).getTimestamp());
 
-        nextQuery.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Iterate through the admin users
-                for (QueryDocumentSnapshot userDocument : task.getResult()) {
-                    // Access the "Products" subcollection for each admin user
-                    CollectionReference productsCollection = userDocument.getReference().collection("Products");
+            nextQuery.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Iterate through the admin users
+                    for (QueryDocumentSnapshot userDocument : task.getResult()) {
+                        // Access the "Products" subcollection for each admin user
+                        CollectionReference productsCollection = userDocument.getReference().collection("Products");
 
-                    // Query products within the "Products" subcollection
-                    Query productsQuery = productsCollection.limit(10);
+                        // Query products within the "Products" subcollection
+                        Query productsQuery = productsCollection.limit(10);
 
-                    // Fetch products within the subcollection
-                    productsQuery.get().addOnCompleteListener(productsTask -> {
-                        if (productsTask.isSuccessful()) {
-                            // Exclude items already in the list
-                            List<Item> newItems = new ArrayList<>();
-                            for (QueryDocumentSnapshot productDocument : productsTask.getResult()) {
-                                Item item = productDocument.toObject(Item.class);
-                                if (!itemList.contains(item)) {
-                                    newItems.add(item);
+                        // Fetch products within the subcollection
+                        productsQuery.get().addOnCompleteListener(productsTask -> {
+                            if (productsTask.isSuccessful()) {
+                                // Exclude items already in the list
+                                List<Item> newItems = new ArrayList<>();
+                                for (QueryDocumentSnapshot productDocument : productsTask.getResult()) {
+                                    Item item = productDocument.toObject(Item.class);
+                                    if (!itemList.contains(item)) {
+                                        newItems.add(item);
+                                    }
                                 }
+                                // Update the adapter's item list and notify the change
+                                itemList.addAll(newItems);
+                                itemAdapter.updateItemList(itemList);
+                                itemAdapter.notifyDataSetChanged();
+
+                                // Common code for updating UI and stopping shimmer effect
+                                updateUIAndStopShimmer();
+                            } else {
+                                Log.d("TAG", "Error getting product documents: ", productsTask.getException());
+                                // Common code for updating UI and stopping shimmer effect
+                                updateUIAndStopShimmer();
                             }
-                            // Update the adapter's item list and notify the change
-                            itemList.addAll(newItems);
-                            itemAdapter.updateItemList(itemList);
-                            itemAdapter.notifyDataSetChanged();
-
-                            // Common code for updating UI and stopping shimmer effect
-                            updateUIAndStopShimmer();
-                        } else {
-                            Log.d("TAG", "Error getting product documents: ", productsTask.getException());
-                            // Common code for updating UI and stopping shimmer effect
-                            updateUIAndStopShimmer();
-                        }
-                    });
+                        });
+                    }
+                } else {
+                    Log.d("TAG", "Error getting admin user documents: ", task.getException());
+                    updateUIAndStopShimmer();
                 }
-            } else {
-                Log.d("TAG", "Error getting admin user documents: ", task.getException());
-                // Common code for updating UI and stopping shimmer effect
-                updateUIAndStopShimmer();
-            }
-        });
-
+            });
+        } else {
+            Log.d("TAG", "itemList is empty");
+        }
     }
+
 
     private void fetchCategory() {
         ArrayList<category> categoryArrayList = new ArrayList<>();

@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.compshop.Admin.AdminMain;
 import com.example.compshop.Authentication.LoginActivity;
 import com.example.compshop.Client.ClientMain;
@@ -39,11 +41,12 @@ public class SplashScreen extends AppCompatActivity {
     private static final int REQUEST_ENABLE_LOCATION = 1001;
     private static int SPLASH_TIMER = 2000;
 
-    //  private TextView appname;
+    private TextView appname;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
     private FirebaseFirestore firestore;
     private DocumentReference userRef;
+    LottieAnimationView lottie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +57,14 @@ public class SplashScreen extends AppCompatActivity {
 
         setContentView(R.layout.splashscreen);
 
-        // appname = findViewById(R.id.appnme);
+        appname = findViewById(R.id.name);
+        lottie = findViewById(R.id.logo);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
+        appname.animate().translationY(-800).setDuration(2700).setStartDelay(0);
+        lottie.setAnimation("cartanim.json");
 
         if (!isConnected()) {
             showNoInternetDialog();

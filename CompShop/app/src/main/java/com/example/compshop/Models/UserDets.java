@@ -3,7 +3,6 @@ package com.example.compshop.Models;
 public class UserDets {
     private String uid;
     private String name;
-    private String university;
     private String email;
     private String phonenumber;
     private String location;
@@ -33,10 +32,9 @@ public class UserDets {
         // Default constructor required for Firebase
     }
 
-    public UserDets(String uid, String name, String university, String email, String phonenumber, String location, String city, String state, String country, String district, String gender, String DOB, String timestamp, String latitude, String longitude, String accounttype, String online,String token) {
+    public UserDets(String uid, String name, String email, String phonenumber, String location, String city, String state, String country, String district, String gender, String DOB, String timestamp, String latitude, String longitude, String accounttype, String online,String token) {
         this.uid = uid;
         this.name = name;
-        this.university = university;
         this.email = email;
         this.phonenumber = phonenumber;
         this.location = location;
@@ -68,14 +66,6 @@ public class UserDets {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAge() {
-        return university;
-    }
-
-    public void setAge(String age) {
-        this.university = age;
     }
 
     public String getEmail() {
