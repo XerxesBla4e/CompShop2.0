@@ -391,7 +391,7 @@ public class UpdateProfile extends AppCompatActivity {
                                 if (accountType.equals("Client")) {
                                     startActivity(new Intent(UpdateProfile.this, ClientMain.class));
                                 } else {
-                                    startActivity(new Intent(getApplicationContext(), AdminMain.class));
+                                    startActivity(new Intent(UpdateProfile.this, AdminMain.class));
 
                                 }
                             }

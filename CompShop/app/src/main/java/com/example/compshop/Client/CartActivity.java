@@ -102,16 +102,8 @@ public class CartActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-
-        //shimmerLayout = activityCartBinding.shimmerLayout3;
-        //shimmerLayout.startShimmer();
-
         getAllItems();
 
-        // shimmerLayout.hideShimmer();
-        //shimmerLayout.setVisibility(View.GONE);
-
-     //   computeTotalPrice();
 
         adapter.setOnQuantityChangeListener(new OnQuantityChangeListener() {
             @Override
@@ -175,6 +167,7 @@ public class CartActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (direction == ItemTouchHelper.RIGHT) {
                     databaseManager.deleteItem(adapter.getItem(viewHolder.getAdapterPosition()).getId());
+                    recreate();
                     computeTotalPrice();
                     Toast.makeText(CartActivity.this, "Cart Item deleted", Toast.LENGTH_SHORT).show();
                 }

@@ -17,9 +17,11 @@ import com.example.compshop.Models.Item;
 import com.example.compshop.R;
 import com.squareup.picasso.Picasso;
 
-public class ItemA extends ListAdapter<Item, ItemA.ItemViewHolder> {
+public class ItemA extends ListAdapter<Item, RecyclerView.ViewHolder> {
     int quantity;
     private OnQuantityChangeListener quantityChangeListener;
+    private static final int VIEW_TYPE_NORMAL = 1;
+    private static final int VIEW_TYPE_EMPTY = 0;
 
     public ItemA() {
         super(CALLBACK);
@@ -50,16 +52,35 @@ public class ItemA extends ListAdapter<Item, ItemA.ItemViewHolder> {
 
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View itemView = layoutInflater.inflate(R.layout.my_cart_row, parent, false);
-        return new ItemViewHolder(itemView);
+
+        if (viewType == VIEW_TYPE_EMPTY) {
+            View emptyView = layoutInflater.inflate(R.layout.empty_view, parent, false);
+            return new EmptyViewHolder(emptyView);
+        } else {
+            View itemView = layoutInflater.inflate(R.layout.my_cart_row, parent, false);
+            return new ItemViewHolder(itemView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        Item item = getItem(position);
-        holder.bind(item);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ItemViewHolder) {
+            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            Item item = getItem(position);
+            itemViewHolder.bind(item);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemCount() == 0 ? VIEW_TYPE_EMPTY : VIEW_TYPE_NORMAL;
+    }
+
+    @Override
+    public int getItemCount() {
+        return super.getItemCount() == 0 ? 1 : super.getItemCount();
     }
 
     public Item getItem(int position) {
@@ -68,6 +89,12 @@ public class ItemA extends ListAdapter<Item, ItemA.ItemViewHolder> {
 
     public void clearCart() {
         submitList(null);
+    }
+
+    public class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public EmptyViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

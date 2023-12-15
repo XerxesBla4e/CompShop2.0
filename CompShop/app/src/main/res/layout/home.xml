@@ -66,7 +66,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="5dp"
                 android:text="Category"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/searchView"
@@ -76,7 +76,7 @@
                 android:id="@+id/linlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="7dp"
                 android:orientation="vertical"
                 android:scrollbarThumbHorizontal="@color/white"
                 android:scrollbarThumbVertical="@color/white"
@@ -85,21 +85,12 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout2"
                     android:layout_width="match_parent"
-                    android:layout_height="184dp">
-
-                    <!--                    <com.facebook.shimmer.ShimmerFrameLayout
-                                            android:id="@+id/shimmerLayout2"
-                                            android:layout_width="389dp"
-                                            android:layout_height="183dp"
-                                            app:layout_constraintEnd_toEndOf="parent"
-                                            app:layout_constraintStart_toStartOf="parent"
-                                            tools:ignore="MissingConstraints"
-                                            tools:layout_editor_absoluteY="43dp">-->
+                    android:layout_height="wrap_content">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewHorizontal"
-                        android:layout_width="389dp"
-                        android:layout_height="183dp"
+                        android:layout_width="390dp"
+                        android:layout_height="124dp"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -121,11 +112,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="9dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="Popular Products "
                         android:textColor="#2196F3"
-                        android:textSize="18sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/shimmerLayout3"
                         app:layout_constraintStart_toStartOf="parent"
@@ -137,19 +128,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_marginEnd="14dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="View All"
                         android:textColor="#2196F3"
                         android:textSize="16sp"
-                        android:textStyle="italic"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/recyclerViewpopv"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.97"
+                        app:layout_constraintHorizontal_bias="0.961"
                         app:layout_constraintStart_toStartOf="@id/textView58"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintVertical_bias="0.777" />
 
                     <com.facebook.shimmer.ShimmerFrameLayout
                         android:id="@+id/shimmerLayout3"
