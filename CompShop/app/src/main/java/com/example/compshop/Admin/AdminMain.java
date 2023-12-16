@@ -101,22 +101,6 @@ public class AdminMain extends AppCompatActivity {
             startActivity(new Intent(AdminMain.this, LoginActivity.class));
             finish();
         }
-        /*firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    uid1 = user.getUid();
-                    shimmerFrameLayout.startShimmer();
-                    fetchOrders();
-                    shimmerFrameLayout.hideShimmer();
-                    shimmerFrameLayout.setVisibility(View.GONE);
-                } else {
-                    startActivity(new Intent(AdminMain.this, LoginActivity.class));
-                    finish();
-                }
-            }
-        });*/
 
         initBottomNavView();
 
@@ -178,7 +162,7 @@ public class AdminMain extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.nav_prof) {
                     Intent x6 = new Intent(getApplicationContext(), UpdateProfile.class);
-                    x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                //    x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(x6);
                     return true;
                 } else if (item.getItemId() == R.id.nav_viewproducts) {

@@ -471,7 +471,7 @@ public class AddItem extends AppCompatActivity {
 
             // Validate discountpercent to ensure it contains a percentage symbol (%)
             if (!discountpercent.contains("%")) {
-                addItemactivityBinding.discountDescriptionEditText.setError("Please insert a discount description with a percentage symbol eg. (20%)");
+                addItemactivityBinding.discountDescriptionEditText.setError("Please insert a discount with a percentage symbol eg. (20%)");
                 return false;
             }
         }

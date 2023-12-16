@@ -391,7 +391,7 @@ public class ClientMain extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.nav_prof2) {
                     Intent x6 = new Intent(ClientMain.this, UpdateProfile.class);
-                    x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                 //   x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(x6);
                     return true;
                 } else if (item.getItemId() == R.id.nav_orders) {

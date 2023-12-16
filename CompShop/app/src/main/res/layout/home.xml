@@ -112,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:layout_marginTop="9dp"
+                        android:layout_marginTop="10dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="Popular Products "
                         android:textColor="#2196F3"
@@ -128,7 +128,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:layout_marginTop="9dp"
+                        android:layout_marginTop="11dp"
                         android:layout_marginEnd="14dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="View All"
@@ -137,10 +137,10 @@
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/recyclerViewpopv"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.961"
+                        app:layout_constraintHorizontal_bias="0.915"
                         app:layout_constraintStart_toStartOf="@id/textView58"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.777" />
+                        app:layout_constraintVertical_bias="0.1" />
 
                     <com.facebook.shimmer.ShimmerFrameLayout
                         android:id="@+id/shimmerLayout3"

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -29,6 +30,7 @@ import com.example.compshop.Client.ClientMain;
 import com.example.compshop.Models.Users;
 import com.example.compshop.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class SplashScreen extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_LOCATION = 1001;
-    private static int SPLASH_TIMER = 2000;
+    private static int SPLASH_TIMER = 3000;
 
     private TextView appname;
     private FirebaseAuth firebaseAuth;
@@ -63,7 +65,7 @@ public class SplashScreen extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        appname.animate().translationY(-800).setDuration(2700).setStartDelay(0);
+        appname.animate().translationY(-750).setDuration(2700).setStartDelay(0);
         lottie.setAnimation("cartanim.json");
 
         if (!isConnected()) {
@@ -80,25 +82,45 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void showNoInternetDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
-        builder.setTitle("No Internet Connection");
-        builder.setMessage("Please connect to the internet to use this app. Some features may not be available without an internet connection.");
-        builder.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Settings.ACTION_SETTINGS));
+            protected Void doInBackground(Void... voids) {
+                return null;
             }
-        });
-        builder.setCancelable(false);
-        builder.show();
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
+                builder.setTitle("No Internet Connection");
+                builder.setMessage("Please connect to the internet to use this app. Some features may not be available without an internet connection.");
+                builder.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(Settings.ACTION_SETTINGS));
+                    }
+                });
+                builder.setCancelable(false);
+                builder.show();
+            }
+        }.execute();
     }
 
     private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
-        } else {
-            enableLocation();
-        }
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void unused) {
+                if (ContextCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(SplashScreen.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+                } else {
+                    enableLocation();
+                }
+            }
+        }.execute();
     }
 
     @Override
@@ -175,36 +197,29 @@ public class SplashScreen extends AppCompatActivity {
         if (user != null) {
             userRef = firestore.collection("users").document(user.getUid());
 
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot snapshot = task.getResult();
-                        if (snapshot != null && snapshot.exists()) {
-                            Users userProfile = snapshot.toObject(Users.class);
-                            if (userProfile != null) {
-                                String accountType = userProfile.getAccounttype();
-
-                                if (accountType.equals("Client")) {
-                                    startActivity(new Intent(SplashScreen.this, ClientMain.class));
-                                } else {
-                                    startActivity(new Intent(getApplicationContext(), AdminMain.class));
-
-                                }
-                            }
-                        } else {
-                            // User collection or document doesn't exist
-                            startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+                public void onSuccess(DocumentSnapshot snapshot) {
+                    if (snapshot != null && snapshot.exists()) {
+                        Users userProfile = snapshot.toObject(Users.class);
+                        if (userProfile != null) {
+                            String accountType = userProfile.getAccounttype();
+                            startAppropriateActivity(accountType);
                         }
-                    } else {
-                        Toast.makeText(SplashScreen.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        // Go back to com.example.budgetfoods.Admin.LoginActivity
-                        startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                     }
                 }
             });
-        } else {
-            startActivity(new Intent(SplashScreen.this, LoginActivity.class));
         }
+    }
+
+    private void startAppropriateActivity(String accountType) {
+
+        if (accountType.equals("Client")) {
+            startActivity(new Intent(SplashScreen.this, ClientMain.class));
+        } else {
+            startActivity(new Intent(getApplicationContext(), AdminMain.class));
+
+        }
+        finish();
     }
 }
