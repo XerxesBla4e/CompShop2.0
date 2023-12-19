@@ -21,7 +21,6 @@ public class ItemA extends ListAdapter<Item, RecyclerView.ViewHolder> {
     int quantity;
     private OnQuantityChangeListener quantityChangeListener;
     private static final int VIEW_TYPE_NORMAL = 1;
-    private static final int VIEW_TYPE_EMPTY = 0;
 
     public ItemA() {
         super(CALLBACK);
@@ -54,14 +53,8 @@ public class ItemA extends ListAdapter<Item, RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-
-        if (viewType == VIEW_TYPE_EMPTY) {
-            View emptyView = layoutInflater.inflate(R.layout.empty_view, parent, false);
-            return new EmptyViewHolder(emptyView);
-        } else {
-            View itemView = layoutInflater.inflate(R.layout.my_cart_row, parent, false);
-            return new ItemViewHolder(itemView);
-        }
+        View itemView = layoutInflater.inflate(R.layout.my_cart_row, parent, false);
+        return new ItemViewHolder(itemView);
     }
 
     @Override
@@ -74,13 +67,8 @@ public class ItemA extends ListAdapter<Item, RecyclerView.ViewHolder> {
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return super.getItemCount() == 0 ? VIEW_TYPE_EMPTY : VIEW_TYPE_NORMAL;
-    }
-
-    @Override
     public int getItemCount() {
-        return super.getItemCount() == 0 ? 1 : super.getItemCount();
+        return super.getItemCount();
     }
 
     public Item getItem(int position) {
@@ -91,16 +79,9 @@ public class ItemA extends ListAdapter<Item, RecyclerView.ViewHolder> {
         submitList(null);
     }
 
-    public class EmptyViewHolder extends RecyclerView.ViewHolder {
-        public EmptyViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
-    }
-
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView textViewName;
         private TextView textViewDescription;
-        // private TextView textViewLocation;
         private TextView textViewPrice;
         private ImageButton imageButtonAdd;
         private ImageButton imageButtonRemove;

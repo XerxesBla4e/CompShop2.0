@@ -7,16 +7,25 @@ import android.app.NotificationManager;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.compshop.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PushNottificationService extends FirebaseMessagingService {
+    FirebaseFirestore firestore;
+
     @SuppressLint("NewApi")
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
@@ -51,4 +60,40 @@ public class PushNottificationService extends FirebaseMessagingService {
 
         super.onMessageReceived(message);
     }
+
+    @Override
+    public void onNewToken(@NonNull String token) {
+        sendTokenToServer(token);
+    }
+
+    private void sendTokenToServer(String token) {
+        // Get the user ID of the currently logged-in user
+        String userId = getCurrentUserId();
+        firestore = FirebaseFirestore.getInstance();
+
+        if (userId != null) {
+            // Create a Map to update the "token" field in the user document
+            Map<String, Object> userUpdate = new HashMap<>();
+            userUpdate.put("token", token);
+
+            // Update the user document with the new FCM token
+            firestore.collection("users")
+                    .document(userId)
+                    .update(userUpdate)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("TAG", "FCM Token Updated Successfully");
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle the failure scenario if necessary
+                        Log.d("TAG", "FCM Token Update Failed");
+                    });
+        }
+    }
+
+    // Helper method to get the user ID of the currently logged-in user
+    private String getCurrentUserId() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        return firebaseUser != null ? firebaseUser.getUid() : null;
+    }
+
 }

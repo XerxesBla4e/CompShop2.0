@@ -3,6 +3,7 @@ package com.example.compshop.Admin;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.compshop.Adapters.ItemOrderA;
 import com.example.compshop.Models.ItemOrder;
 import com.example.compshop.Models.Order;
-import com.example.compshop.Models.UserDets;
 import com.example.compshop.R;
 import com.example.compshop.Utils.FCMSend;
 import com.example.compshop.Utils.LocationUtils;
@@ -47,7 +47,7 @@ public class ClientDetails extends AppCompatActivity {
     ImageView edit, delete;
     Order ordersModel;
     List<ItemOrder> orderList;
-    String notstudenttoken;
+    String notstudenttoken, contact, Adminlatitude, Adminlongitude, Clientlatitude, Clientlongitude;
 
     ItemOrderA OrdersAdapter;
     FirebaseFirestore firestore;
@@ -56,6 +56,7 @@ public class ClientDetails extends AppCompatActivity {
     String OrderID, OrderBy;
     FirebaseUser firebaseUser;
     String id;
+    ImageView call, track;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class ClientDetails extends AppCompatActivity {
         firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
             id = firebaseUser.getUid();
+            retrieveMyDetails(id);
         }
 
         Intent intent = getIntent();
@@ -84,8 +86,27 @@ public class ClientDetails extends AppCompatActivity {
 
         retrievePersonalDets(OrderBy);
 
-        Toast.makeText(getApplicationContext(), "Order By" + OrderBy, Toast.LENGTH_SHORT).show();
+        call.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String phoneNumber = "tel:" + contact;
+                        Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse(phoneNumber));
+                        startActivity(dialIntent);
+                    }
+                }
+        );
 
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uri = "http://maps.google.com/maps?saddr=" + Adminlatitude + "," +
+                        Adminlongitude + "&daddr=" + Clientlatitude + "," + Clientlongitude;
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
         // Create a Firestore query to retrieve the item orders for the specific order and user
         CollectionReference userOrdersRef = FirebaseFirestore.getInstance().collection("users");
 
@@ -153,6 +174,22 @@ public class ClientDetails extends AppCompatActivity {
         });
     }
 
+    private void retrieveMyDetails(String id) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(id);
+
+        userRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Adminlatitude = documentSnapshot.getString("latitude");
+                        Adminlongitude = documentSnapshot.getString("longitude");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the failure scenario if necessary
+                });
+    }
+
     private void updateOrderStatusDialog() {
         final String[] status3 = {"In Progress", "Confirmed", "Cancelled"};
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ClientDetails.this);
@@ -197,6 +234,8 @@ public class ClientDetails extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(OrdersAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        call = activityClientDetailsBinding.call;
+        track = activityClientDetailsBinding.clientlocation1;
     }
 
     private void updateOrderStatus(String message) {
@@ -247,9 +286,12 @@ public class ClientDetails extends AppCompatActivity {
                             DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
 
                             String name = documentSnapshot.getString("name");
+                            contact = documentSnapshot.getString("phonenumber");
                             studentname.setText("Hello " + name);
                             double latitude = Double.valueOf(documentSnapshot.getString("latitude"));
                             double longitude = Double.valueOf(documentSnapshot.getString("longitude"));
+                            Clientlatitude = documentSnapshot.getString("latitude");
+                            Clientlongitude = documentSnapshot.getString("longitude");
                             notstudenttoken = documentSnapshot.getString("token");
 
                             String address = LocationUtils.getAddressFromLatLng(getApplicationContext(), latitude, longitude);

@@ -132,7 +132,7 @@ public class AdminSignup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent x = new Intent(getApplicationContext(), LoginActivity.class);
-                x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                //x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(x);
             }
         });
@@ -470,5 +470,4 @@ public class AdminSignup extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 }

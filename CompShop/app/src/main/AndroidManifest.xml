@@ -62,6 +62,9 @@
             android:name=".Authentication.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".Client.CategoryItems"
+            android:exported="false" />
+        <activity
             android:name=".Admin.AddItem"
             android:exported="false" />
         <activity

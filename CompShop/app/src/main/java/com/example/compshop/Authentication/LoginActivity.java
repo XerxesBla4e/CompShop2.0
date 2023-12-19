@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding activityLoginBinding;
     Animation fadeIn, bottom_down;
     LinearLayout linearLayout;
-    CardView cardView, cardView2, cardView3, cardView4;
+    CardView cardView, cardView3;
     TextView textView, textView2;
     ConstraintLayout registerLayout, majorlayout;
     //  ProgressBar progressBar;
@@ -82,9 +82,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void run() {
                 cardView.startAnimation(fadeIn);
-                cardView2.startAnimation(fadeIn);
+                // cardView2.startAnimation(fadeIn);
                 cardView3.startAnimation(fadeIn);
-                cardView4.startAnimation(fadeIn);
+                // cardView4.startAnimation(fadeIn);
                 textView.startAnimation(fadeIn);
                 textView2.startAnimation(fadeIn);
                 registerLayout.startAnimation(fadeIn);
@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent x = new Intent(getApplicationContext(), ClientSignup.class);
-                x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                //   x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(x);
             }
         });
@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent x = new Intent(getApplicationContext(), RecoverPassword.class);
-                x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                //  x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(x);
             }
         });
@@ -151,9 +151,9 @@ public class LoginActivity extends AppCompatActivity {
         linearLayout = activityLoginBinding.topLinearLayout3;
         linearLayout.startAnimation(bottom_down);
         cardView = activityLoginBinding.cardView;
-        cardView2 = activityLoginBinding.cardView2;
+        // = activityLoginBinding.cardView2;
         cardView3 = activityLoginBinding.cardView3;
-        cardView4 = activityLoginBinding.cardView4;
+        // cardView4 = activityLoginBinding.cardView4;
         textView = activityLoginBinding.textView;
         textView2 = activityLoginBinding.textView2;
         registerLayout = activityLoginBinding.registerLayout;

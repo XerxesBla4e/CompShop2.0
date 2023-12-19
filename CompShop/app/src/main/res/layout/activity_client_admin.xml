@@ -67,7 +67,7 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
-            <!-- Update and Delete SVGs -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,12 +81,20 @@
                     android:src="@drawable/edit1" />
 
                 <ImageView
-                    android:id="@+id/studentlocation1"
+                    android:id="@+id/clientlocation1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
-                    android:tooltipText="View Student Location"
-                    android:src="@drawable/ic_location" />
+                    android:src="@drawable/ic_location"
+                    android:tooltipText="View Location" />
+
+                <ImageView
+                    android:id="@+id/call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/baseline_call_24"
+                    android:tooltipText="Call Client" />
 
             </LinearLayout>
         </LinearLayout>
@@ -101,9 +109,9 @@
         app:cardElevation="3dp">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView65"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/recyclerView65"
             tools:listitem="@layout/orderlist1" />
     </androidx.cardview.widget.CardView>
 

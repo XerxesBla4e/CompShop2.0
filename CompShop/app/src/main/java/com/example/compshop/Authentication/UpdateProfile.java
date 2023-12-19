@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -43,13 +44,18 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -102,9 +108,12 @@ public class UpdateProfile extends AppCompatActivity {
         pickLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 displayLocation();
             }
         });
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.gender_array,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -147,6 +156,18 @@ public class UpdateProfile extends AppCompatActivity {
                 updateData(uid1);
             }
         });
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        token = task.getResult();
+                        Log.d(TAG, "XerToken:" + token);
+                    }
+                });
     }
 
     private void updateData(String userId) {
@@ -163,30 +184,34 @@ public class UpdateProfile extends AppCompatActivity {
         user.put("email", email);
         user.put("phonenumber", phoneNumber);
         user.put("location", location);
-        user.put("city", city);
-        user.put("state", state);
-        user.put("country", country);
-        user.put("district", district);
+
+        if (city != null && state != null && country != null && district != null) {
+            user.put("city", city);
+            user.put("state", state);
+            user.put("country", country);
+            user.put("district", district);
+        }
         user.put("gender", gender);
         user.put("timestamp", timestamp);
         user.put("latitude", longitude);
         user.put("longitude", latitude);
         user.put("online", "true");
-        user.put("token", token);
+        if (token != null && !token.isEmpty()) {
+            user.put("token", token);
+        }
 
         firestore.collection("users")
                 .document(userId)
                 .update(user)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getApplicationContext(), "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
-                    Intent x6 = new Intent(getApplicationContext(), UpdateProfile.class);
-                    x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(x6);
+                    checkUserType();
                 })
                 .addOnFailureListener(e -> {
                     // Handle the failure scenario if necessary
                 });
     }
+
 
     private void retrieveUserDetails(String userId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -337,17 +362,31 @@ public class UpdateProfile extends AppCompatActivity {
         try {
             Geocoder geocoder = new Geocoder(UpdateProfile.this, Locale.getDefault());
             List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-            address = addressList.get(0).getAddressLine(0);
 
-            activityUpdateProfileBinding.locationEdit.setText(address);
-            city = addressList.get(0).getLocality();
-            state = addressList.get(0).getAdminArea();
-            country = addressList.get(0).getCountryName();
-            district = addressList.get(0).getSubAdminArea();
+            if (addressList != null && !addressList.isEmpty()) {
+                Address address = addressList.get(0);
+                city = address.getLocality();
+                state = address.getAdminArea();
+                country = address.getCountryName();
+                district = address.getSubAdminArea();
+
+                // Check for null values and assign default if needed
+                city = city != null ? city : "";
+                state = state != null ? state : "";
+                country = country != null ? country : "";
+                district = district != null ? district : "";
+
+                // Set the address in the EditText
+                activityUpdateProfileBinding.locationEdit.setText(address.getAddressLine(0));
+            } else {
+                Toast.makeText(getApplicationContext(), "Unable to fetch address", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error retrieving address", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void stopLocationUpdates() {
         if (locationListener != null) {

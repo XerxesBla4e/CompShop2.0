@@ -42,6 +42,7 @@ import com.example.compshop.Authentication.UpdateProfile;
 import com.example.compshop.Cart.DatabaseManager;
 import com.example.compshop.Interface.ActionType;
 import com.example.compshop.Interface.OnItemClickListener;
+import com.example.compshop.Interface.OnMoveToItemsListener;
 import com.example.compshop.Location.LocationManagerHelper;
 import com.example.compshop.Models.Item;
 import com.example.compshop.Models.category;
@@ -52,9 +53,11 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -94,6 +97,9 @@ public class ClientMain extends AppCompatActivity {
     LocationManagerHelper locationManagerHelper;
     ImageView imageView1;
     ShimmerFrameLayout shimmerFrameLayout;
+    ArrayList<category> categoryArrayList = new ArrayList<>();
+    RecyclerView recyclerView1;
+    MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +113,6 @@ public class ClientMain extends AppCompatActivity {
         initViews(homeBinding);
 
         setSupportActionBar(toolbar);
-
 
         shimmerFrameLayout.startShimmer();
 
@@ -223,6 +228,14 @@ public class ClientMain extends AppCompatActivity {
             }
         });
 
+        myAdapter.setOnMoveToItemsListener(new OnMoveToItemsListener() {
+            @Override
+            public void onMoveToDets(category category) {
+                Intent intent = new Intent(ClientMain.this, CategoryItems.class);
+                intent.putExtra("categorydata", category);
+                startActivity(intent);
+            }
+        });
     }
 
     private void callpopupdialog(Item item) {
@@ -391,7 +404,7 @@ public class ClientMain extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.nav_prof2) {
                     Intent x6 = new Intent(ClientMain.this, UpdateProfile.class);
-                 //   x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    //   x6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(x6);
                     return true;
                 } else if (item.getItemId() == R.id.nav_orders) {
@@ -469,6 +482,9 @@ public class ClientMain extends AppCompatActivity {
         viewall = homeBinding.textView59;
         itemAdapter = new ItemAdapter(getApplicationContext());
         recyclerView.setAdapter(itemAdapter);
+        recyclerView1 = homeBinding.recyclerViewHorizontal;
+        recyclerView1.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        myAdapter = new MyAdapter(getApplicationContext(), categoryArrayList);
     }
 
     private void updateUIAndStopShimmer() {
@@ -584,11 +600,6 @@ public class ClientMain extends AppCompatActivity {
 
 
     private void fetchCategory() {
-        ArrayList<category> categoryArrayList = new ArrayList<>();
-        RecyclerView recyclerView1 = homeBinding.recyclerViewHorizontal;
-        recyclerView1.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        MyAdapter myAdapter = new MyAdapter(getApplicationContext(), categoryArrayList);
-
         Query userQuery = db.collection("users").whereEqualTo("accounttype", "Admin");
 
         userQuery.get().addOnCompleteListener(task -> {

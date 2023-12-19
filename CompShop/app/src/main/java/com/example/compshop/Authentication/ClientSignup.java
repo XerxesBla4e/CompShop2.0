@@ -196,8 +196,6 @@ public class ClientSignup extends AppCompatActivity {
                         Log.d(TAG, "XerToken:" + token);
                     }
                 });
-
-
     }
 
     private void uploadData(String uid) {
@@ -439,4 +437,6 @@ public class ClientSignup extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 }

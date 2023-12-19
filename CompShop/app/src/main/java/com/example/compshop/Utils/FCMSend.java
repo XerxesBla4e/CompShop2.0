@@ -32,7 +32,7 @@ public class FCMSend {
             json.put("notification", notification);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.POST, Constants.BASE_URL, json, new Response.Listener<JSONObject>() {
+                    Request.Method.POST, Constants.BASE_URL1, json, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     System.out.println("FCM " + response);

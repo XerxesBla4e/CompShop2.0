@@ -19,7 +19,6 @@
             android:layout_margin="6dp"
             android:padding="16dp">
 
-            <!-- Patient Details -->
             <TextView
                 android:id="@+id/patientname"
                 android:layout_width="match_parent"
@@ -36,7 +35,6 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <!-- Status and Total Price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,6 +59,29 @@
                     android:text="Total Price"
                     android:textSize="14sp"
                     android:textStyle="bold" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/clientlocation2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/ic_location"
+                    android:tooltipText="View Location" />
+
+                <ImageView
+                    android:id="@+id/call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/baseline_call_24"
+                    android:tooltipText="Call Client" />
 
             </LinearLayout>
         </LinearLayout>

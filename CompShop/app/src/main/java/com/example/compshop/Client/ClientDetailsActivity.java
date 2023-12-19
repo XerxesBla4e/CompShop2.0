@@ -2,8 +2,10 @@ package com.example.compshop.Client;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +49,8 @@ public class ClientDetailsActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     String OrderID, OrderBy, OrderTo;
     FirebaseUser firebaseUser;
-    String id, name;
+    String id, name, contact, Adminlatitude, Adminlongitude, Clientlatitude, Clientlongitude;
+    ImageView call, track;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class ClientDetailsActivity extends AppCompatActivity {
             OrderID = ordersModel.getOrderID();
             OrderBy = ordersModel.getOrderBy();
             OrderTo = ordersModel.getOrderTo();
+            retrieveAdminDetails(OrderTo);
+
             String status3 = ordersModel.getOrderStatus();
 
 
@@ -88,6 +93,25 @@ public class ClientDetailsActivity extends AppCompatActivity {
             }
         }
 
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String phoneNumber = "tel:" + contact;
+                Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse(phoneNumber));
+                startActivity(dialIntent);
+            }
+        });
+
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uri = "http://maps.google.com/maps?saddr=" + Clientlatitude + "," +
+                        Clientlongitude + "&daddr=" + Adminlatitude + "," + Adminlongitude;
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
         CollectionReference itemOrdersRef = FirebaseFirestore.getInstance().collection("users")
                 .document(OrderTo)
                 .collection("orders")
@@ -131,6 +155,23 @@ public class ClientDetailsActivity extends AppCompatActivity {
         });
     }
 
+    private void retrieveAdminDetails(String orderTo) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(orderTo);
+
+        userRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Adminlatitude = documentSnapshot.getString("latitude");
+                        Adminlongitude = documentSnapshot.getString("longitude");
+                        contact = documentSnapshot.getString("phonenumber");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the failure scenario if necessary
+                });
+    }
+
     private void retrieveUserDetails(String userId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("users").document(userId);
@@ -140,9 +181,12 @@ public class ClientDetailsActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         name = documentSnapshot.getString("name");
                         studentname.setText("Hello " + name);
+                       // contact = documentSnapshot.getString("phonenumber");
+
                         double latitude = Double.valueOf(documentSnapshot.getString("latitude"));
                         double longitude = Double.valueOf(documentSnapshot.getString("longitude"));
-
+                        Clientlatitude = documentSnapshot.getString("latitude");
+                        Clientlongitude = documentSnapshot.getString("longitude");
 
                         String address = LocationUtils.getAddressFromLatLng(getApplicationContext(), latitude, longitude);
                         Log.d("User Address", "Address: " + address);
@@ -167,6 +211,8 @@ public class ClientDetailsActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(itemOrderAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        call = activityClientDetailsBinding.call;
+        track = activityClientDetailsBinding.clientlocation2;
     }
 
     @Override

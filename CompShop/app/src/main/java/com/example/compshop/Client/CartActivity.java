@@ -167,9 +167,9 @@ public class CartActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (direction == ItemTouchHelper.RIGHT) {
                     databaseManager.deleteItem(adapter.getItem(viewHolder.getAdapterPosition()).getId());
-                    recreate();
                     computeTotalPrice();
                     Toast.makeText(CartActivity.this, "Cart Item deleted", Toast.LENGTH_SHORT).show();
+                    recreate();
                 }
             }
         }).attachToRecyclerView(activityCartBinding.recyclerview11);
@@ -200,7 +200,7 @@ public class CartActivity extends AppCompatActivity {
                         name = documentSnapshot.getString("name");
                         email = documentSnapshot.getString("email");
                         phone_contact = documentSnapshot.getString("phonenumber");
-                        // location = documentSnapshot.getString("location");
+                      //  Toast.makeText(getApplicationContext(), "Email: " + email + " Phone:" + phone_contact, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -389,7 +389,7 @@ public class CartActivity extends AppCompatActivity {
 
                             if (user != null) {
                                 notadmintoken = user.getToken();
-                              //  Toast.makeText(CartActivity.this,"Token: "+notadmintoken,Toast.LENGTH_SHORT).show();
+                                //  Toast.makeText(CartActivity.this,"Token: "+notadmintoken,Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Error: Unable to retrieve user data", Toast.LENGTH_SHORT).show();
                             }
