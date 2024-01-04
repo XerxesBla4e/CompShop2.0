@@ -63,18 +63,11 @@ public class CartActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     private static final String TAG = "error";
     String notadmintoken, phone_contact, name, email;
-    // String email1 = "Mugashab@gmail.com";
-    //String fName = "Mugasha";
-    //String lName = "Bradley";
-    //String narration = "payment for Products";
     String txRef;
-    String country = "UG";
     String currency = "UGX";
-
     DatabaseManager databaseManager;
     List<Item> items;
     // ShimmerFrameLayout shimmerLayout;
-
     FirebaseUser user;
     String uid1;
 
@@ -163,13 +156,14 @@ public class CartActivity extends AppCompatActivity {
                 return false;
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (direction == ItemTouchHelper.RIGHT) {
                     databaseManager.deleteItem(adapter.getItem(viewHolder.getAdapterPosition()).getId());
-                    computeTotalPrice();
                     Toast.makeText(CartActivity.this, "Cart Item deleted", Toast.LENGTH_SHORT).show();
-                    recreate();
+                    computeTotalPrice();
+                    adapter.notifyItemRemoved(adapter.getItem(viewHolder.getAdapterPosition()).getId());
                 }
             }
         }).attachToRecyclerView(activityCartBinding.recyclerview11);
@@ -200,7 +194,7 @@ public class CartActivity extends AppCompatActivity {
                         name = documentSnapshot.getString("name");
                         email = documentSnapshot.getString("email");
                         phone_contact = documentSnapshot.getString("phonenumber");
-                      //  Toast.makeText(getApplicationContext(), "Email: " + email + " Phone:" + phone_contact, Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getApplicationContext(), "Email: " + email + " Phone:" + phone_contact, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -336,10 +330,15 @@ public class CartActivity extends AppCompatActivity {
                                                                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                                         @Override
                                                                         public void onSuccess(DocumentReference documentReference) {
-                                                                            Toast.makeText(getApplicationContext(), "Item Order Placed Successfully", Toast.LENGTH_SHORT).show();
-                                                                            databaseManager.deleteAll();
-                                                                            adapter.clearCart();
-                                                                            prepareNotificationMessage("New Item Order: ID" + timestamp);
+                                                                            List<Item> itemcarts = adapter.getCurrentList();
+                                                                            if (!itemcarts.isEmpty()) {
+                                                                                Toast.makeText(getApplicationContext(), "Item Order Placed Successfully", Toast.LENGTH_SHORT).show();
+                                                                                databaseManager.deleteAll();
+                                                                                adapter.clearCart();
+                                                                                prepareNotificationMessage("New Item Order: ID" + timestamp);
+                                                                            } else {
+                                                                                Toast.makeText(getApplicationContext(), "Add items to cart first", Toast.LENGTH_SHORT).show();
+                                                                            }
                                                                         }
                                                                     })
                                                                     .addOnFailureListener(new OnFailureListener() {

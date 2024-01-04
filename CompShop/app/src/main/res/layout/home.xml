@@ -35,7 +35,6 @@
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
-                style="@style/SearchViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="12dp"
@@ -53,7 +52,7 @@
                     android:id="@+id/textView35"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Search"
+                    android:text="Search Item/Category"
                     android:textAlignment="inherit"
                     android:textColor="@color/black"
                     android:textSize="14sp" />

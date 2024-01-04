@@ -31,8 +31,8 @@ public class Item implements Serializable {
         this.timestamp = timestamp;
         this.Uid = uid;
         this.image = image;
-        //this.quantity = 1;
-        this.total = recalculateTotal(); // Calculate total based on initial quantity
+        this.quantity = quantity;
+        this.total = total;
         this.isFavorite = false;
     }
 

@@ -51,6 +51,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -207,6 +208,7 @@ public class AdminMain extends AppCompatActivity {
 
         currentUserRef.collection("orders") // Assuming "orders" is the collection containing order documents
                 .whereEqualTo("orderTo", firebaseAuth.getUid())
+                .orderBy("orderTime", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     orderList.clear();

@@ -310,6 +310,7 @@ public class ClientMain extends AppCompatActivity {
                         Toast.makeText(view.getContext(), "Item is already in the cart", Toast.LENGTH_SHORT).show();
                     } else {
                         // Item is not in the cart, proceed to add it
+                       // Toast.makeText(view.getContext(), "Total: " + item.getTotal() + " Quantity: " + item.getQuantity(), Toast.LENGTH_SHORT).show();
                         Item item2 = new Item(item.getName(), item.getCategory(), item.getDescription(), item.getPrice(),
                                 item.getItem_Id(), item.getTimestamp(), item.getUid(), item.getImage(), item.getQuantity(), item.getTotal());
 

@@ -73,7 +73,6 @@ public class CategoryItems extends AppCompatActivity {
     private ImageButton addQty, reduceQty;
     private ImageButton favoriteButton;
     private Button addToCartBtn;
-    LocationManagerHelper locationManagerHelper;
     ImageView imageView1;
     ShimmerFrameLayout shimmerFrameLayout;
 
@@ -194,6 +193,11 @@ public class CategoryItems extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.nav_favourites) {
                     Intent x4 = new Intent(CategoryItems.this, FavoritesActivity.class);
+                    x4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(x4);
+                    return true;
+                } else if (item.getItemId() == R.id.nav_home) {
+                    Intent x4 = new Intent(CategoryItems.this, ClientMain.class);
                     x4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(x4);
                     return true;
